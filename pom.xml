@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>win.hupubao</groupId>
-    <artifactId>common</artifactId>
+    <artifactId>hupubao-common</artifactId>
     <version>1.0</version>
+
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -178,4 +179,5 @@
 
 
     </dependencies>
+
 </project>

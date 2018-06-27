@@ -7,7 +7,6 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.apache.commons.codec.binary.Base64;
-import spark.utils.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -15,7 +14,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -35,7 +33,7 @@ public class QrCodeUtils {
         FileOutputStream out = null;
 
 
-        base64 = replaceBlank(base64);
+        base64 = StringUtils.replaceBlank(base64);
         try {
             out = new FileOutputStream(new File(
                     filepath));
@@ -59,22 +57,6 @@ public class QrCodeUtils {
     }
 
     /**
-     * 替换所有回车、空白符
-     *
-     * @param str
-     * @return
-     */
-    public static String replaceBlank(String str) {
-        String dest = "";
-        if (str != null) {
-            Pattern p = PATTERN_BLANK;
-            Matcher m = p.matcher(str);
-            dest = m.replaceAll("");
-        }
-        return dest;
-    }
-
-    /**
      * 解析二维码中链接值
      *
      * @param base64
@@ -86,7 +68,7 @@ public class QrCodeUtils {
             return content;
         }
 
-        base64 = replaceBlank(base64);
+        base64 = StringUtils.replaceBlank(base64);
         try {
 
             byte[] decoderBytes = Base64.decodeBase64(base64);
