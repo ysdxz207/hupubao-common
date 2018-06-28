@@ -16,6 +16,38 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-release</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/ysdxz207/hupubao-common/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/ysdxz207/hupubao-common</url>
+        <connection>https://github.com/ysdxz207/hupubao-common.git</connection>
+        <developerConnection>https://github.com/ysdxz207/hupubao-common</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>moses.wei</name>
+            <email>ysdxz207@qq.com</email>
+            <url>http://hupubao.win</url>
+        </developer>
+    </developers>
 
     <build>
         <resources>
