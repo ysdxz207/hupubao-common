@@ -305,7 +305,7 @@ public class Page {
         return CHARSET;
     }
 
-    public class Response {
+    public static class Response {
 
         private Document document;
 
@@ -315,6 +315,16 @@ public class Page {
 
         public Response(Document document) {
             this.document = document == null ? new Document("") : document;
+        }
+
+
+        /**
+         * 解析html或xml
+         * @param htmlOrXml
+         * @return
+         */
+        public static Response parse(String htmlOrXml) {
+            return new Response(Jsoup.parse(htmlOrXml));
         }
 
         /**
