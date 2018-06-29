@@ -25,7 +25,7 @@
             <id>gpg</id>
             <properties>
                 <gpg.executable>C:\Program Files (x86)\GnuPG\bin\gpg.exe</gpg.executable>
-                <!--<gpg.homedir>C:\Users\weishaoqiang\AppData\Roaming\gnupg</gpg.homedir>-->
+                <!--<gpg.homedir>C:\Users\xxx\AppData\Roaming\gnupg</gpg.homedir>-->
                 <gpg.keyname>E24B7C02</gpg.keyname>
             </properties>
             <activation>
