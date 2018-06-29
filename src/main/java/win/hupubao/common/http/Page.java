@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package win.hupubao.common.http;
 
 import com.alibaba.fastjson.JSON;
@@ -26,31 +42,27 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author Moses.wei
  * @date 2018-06-13 17:44:35
- *
+ * <p>
  * 通用HTTP请求工具
  */
 
 public class Page {
-
-    private static final Logger logger = LoggerFactory.getLogger(Page.class);
+    private Logger logger = Logger.getLogger(Page.class.getName());
 
     private static int TIMEOUT_REQUEST = 5000;
     private static int TIMEOUT_CONNECTION = 5000;
@@ -69,18 +81,18 @@ public class Page {
         return new Page();
     }
 
-    public Page readTimeout(int readTimeout) {
-        TIMEOUT_READ_DATA = readTimeout;
+    public Page readTimeout(int readTimeoutMillis) {
+        TIMEOUT_READ_DATA = readTimeoutMillis;
         return this;
     }
 
-    public Page requestTimeout(int requestTimeout) {
-        TIMEOUT_REQUEST = requestTimeout;
+    public Page requestTimeout(int requestTimeoutMillis) {
+        TIMEOUT_REQUEST = requestTimeoutMillis;
         return this;
     }
 
-    public Page connectionTimeout(int connectionTimeout) {
-        TIMEOUT_CONNECTION = connectionTimeout;
+    public Page connectionTimeout(int connectionTimeoutMillis) {
+        TIMEOUT_CONNECTION = connectionTimeoutMillis;
         return this;
     }
 
@@ -188,7 +200,7 @@ public class Page {
 
         List<NameValuePair> list = new ArrayList<>();
         if (params == null
-            || params.isEmpty()) {
+                || params.isEmpty()) {
             return list;
         }
 
@@ -199,17 +211,15 @@ public class Page {
     }
 
     /**
-     *
      * @param url
-     * @param params
-     *      GET方式支持JSONObject类型
-     *      POST方式支持JSONObject和String类型
+     * @param params GET方式支持JSONObject类型
+     *               POST方式支持JSONObject和String类型
      * @param method
      * @return
      */
-    public Response read(String url,
-                          Object params,
-                          Connection.Method method) {
+    public Response request(String url,
+                            Object params,
+                            Connection.Method method) {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_CONNECTION)
                 .setConnectionRequestTimeout(TIMEOUT_REQUEST)
@@ -230,60 +240,54 @@ public class Page {
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultRequestConfig(requestConfig).build();
 
-        try {
-            return requestAndParse(httpClient, httpMethod, context);
-
-        } catch (IOException e) {
-            if (RETRY_TIMES > 0) {
-                RETRY_TIMES--;
-                logger.info("[Page request retry]:" + url);
-                try {
-                    return requestAndParse(httpClient, httpMethod, context);
-                } catch (IOException e1) {
-                }
-            }
-        }
-        return response;
+        return requestAndParse(httpClient, httpMethod, context);
     }
 
     private Response requestAndParse(HttpClient httpClient,
                                      HttpRequestBase method,
-                                     HttpClientContext context) throws IOException {
+                                     HttpClientContext context) {
         Response response = new Response();
         Document document = new Document("");
         response.setDocument(document);
-        HttpResponse httpResponse = httpClient.execute(method, context);
-
-        int statusCode = httpResponse.getStatusLine().getStatusCode();
-
-        HttpHost target = context.getTargetHost();
-        List<URI> redirectLocations = context.getRedirectLocations();
-        URI location = null;
         try {
-            location = URIUtils.resolve(method.getURI(), target, redirectLocations);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        String baseUri = location != null ? location.toASCIIString() : "";
-        document.setBaseUri(baseUri);
+            HttpResponse httpResponse = httpClient.execute(method, context);
 
-        byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
-        String html = new String(bytes);
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
 
-        if (statusCode == HttpStatus.SC_OK
-                && StringUtils.isNotBlank(html)) {
-            String charset = getCharset(Jsoup.parse(html));
-            html = new String(bytes, charset);
-            if (StringUtils.isNotBlank(html)) {
-                Document doc = Jsoup.parse(html);
-                if (doc == null) {
+            HttpHost target = context.getTargetHost();
+            List<URI> redirectLocations = context.getRedirectLocations();
+            URI location = null;
+            try {
+                location = URIUtils.resolve(method.getURI(), target, redirectLocations);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            String baseUri = location != null ? location.toASCIIString() : "";
+            document.setBaseUri(baseUri);
+
+            byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
+            String html = new String(bytes);
+
+            if (statusCode == HttpStatus.SC_OK
+                    && StringUtils.isNotBlank(html)) {
+                String charset = getCharset(Jsoup.parse(html));
+                html = new String(bytes, charset);
+                if (StringUtils.isNotBlank(html)) {
+                    Document doc = Jsoup.parse(html);
+                    if (doc == null) {
+                        return response;
+                    }
+                    response.setDocument(doc);
                     return response;
                 }
-                response.setDocument(doc);
-                return response;
+            }
+        } catch (IOException e) {
+            if (RETRY_TIMES > 0) {
+                RETRY_TIMES--;
+                logger.info("[Page request retry]:" + method.getURI());
+                return requestAndParse(httpClient, method, context);
             }
         }
-
         return response;
     }
 
@@ -326,6 +330,7 @@ public class Page {
 
         /**
          * 解析html或xml
+         *
          * @param htmlOrXml
          * @return
          */
@@ -334,9 +339,7 @@ public class Page {
         }
 
         /**
-         *
-         * @param extractXMLCDATA
-         *      是否提取CDATA值
+         * @param extractXMLCDATA 是否提取CDATA值
          * @return
          * @throws UnsupportedJsonFormatException
          */
@@ -367,12 +370,14 @@ public class Page {
             }
             return result;
         }
+
         public JSONObject bodyToJSONObject() throws UnsupportedJsonFormatException {
             return bodyToJSONObject(false);
         }
 
         /**
          * 支持的body类型：json 字符串，xml字符串
+         *
          * @param element
          * @return
          */
@@ -414,7 +419,6 @@ public class Page {
             super(message);
         }
     }
-
 }
 
 

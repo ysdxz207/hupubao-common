@@ -1,8 +1,22 @@
+/*
+ * Copyright 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package win.hupubao.common.utils;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -12,11 +26,9 @@ import java.util.List;
 /**
  * 反射的Utils函数集合. 提供访问私有变量,获取泛型类型Class,提取集合中元素的属性等Utils函数.
  * 
- * @author lei
+ * @author Moses
  */
 public class ReflectionUtils {
- 
-    private static Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
  
     private ReflectionUtils() {
     }
@@ -36,7 +48,7 @@ public class ReflectionUtils {
         try {
             result = field.get(object);
         } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常{}", e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -55,7 +67,7 @@ public class ReflectionUtils {
         try {
             field.set(object, value);
         } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常:{}", e.getMessage());
+            e.printStackTrace();
         }
     }
  
@@ -124,18 +136,15 @@ public class ReflectionUtils {
         Type genType = clazz.getGenericSuperclass();
  
         if (!(genType instanceof ParameterizedType)) {
-            logger.warn(clazz.getSimpleName() + "'s superclass not ParameterizedType");
             return Object.class;
         }
  
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
  
         if (index >= params.length || index < 0) {
-            logger.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: " + params.length);
             return Object.class;
         }
         if (!(params[index] instanceof Class)) {
-            logger.warn(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
             return Object.class;
         }
         return (Class) params[index];

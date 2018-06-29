@@ -7,7 +7,7 @@
 
     <groupId>win.hupubao</groupId>
     <artifactId>hupubao-common</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>hupubao-common</name>
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
@@ -47,8 +47,8 @@
 
     <licenses>
         <license>
-            <name>MIT License</name>
-            <url>https://github.com/ysdxz207/hupubao-common/blob/master/LICENSE</url>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -187,25 +187,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.35</version>
         </dependency>
-
-
-        <!--logger-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-        </dependency>
-
 
         <!-- html解析 -->
         <dependency>
