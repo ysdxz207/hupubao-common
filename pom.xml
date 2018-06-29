@@ -4,9 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
     <groupId>win.hupubao</groupId>
     <artifactId>hupubao-common</artifactId>
     <version>1.0</version>
+    <name>hupubao-common</name>
+    <packaging>jar</packaging>
+    <url>http://maven.apache.org</url>
+    <description>简单封装公共工具，IP工具，二维码工具，驼峰转换工具，des加解密工具，http访问工具，字符串工具，日期工具</description>
 
 
     <properties>
