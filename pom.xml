@@ -11,7 +11,7 @@
     <name>hupubao-common</name>
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
-    <description>简单封装公共工具，IP工具，二维码工具，驼峰转换工具，des加解密工具，http访问工具，字符串工具，日期工具</description>
+    <description>简单封装公共工具，二维码工具，驼峰转换工具，des加解密工具，http访问工具，字符串工具，日期工具</description>
 
 
     <properties>
@@ -205,6 +205,7 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
+
 
         <!-- html解析 -->
         <dependency>

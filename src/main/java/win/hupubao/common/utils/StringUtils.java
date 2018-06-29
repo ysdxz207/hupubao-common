@@ -12,7 +12,7 @@ import static java.util.regex.Pattern.compile;
 public class StringUtils {
 
     public static boolean isBlank(Object obj) {
-        return obj == null || spark.utils.StringUtils.isBlank(obj.toString())
+        return obj == null || org.apache.commons.lang3.StringUtils.isBlank(obj.toString())
                 || obj.toString().equalsIgnoreCase("null");
     }
 
