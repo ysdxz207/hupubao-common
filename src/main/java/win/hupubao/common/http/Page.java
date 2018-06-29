@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +171,12 @@ public class Page {
                 post.setEntity(paramsEntity);
             }
         } else if (params instanceof String) {
-            StringEntity stringEntity = new StringEntity(params.toString(), CHARSET);
+            StringEntity stringEntity;
+            try {
+                stringEntity = new StringEntity(params.toString(), CHARSET);
+            } catch (Exception e) {
+                throw new RuntimeException("Build post method exception:" + e.getMessage());
+            }
             post.setEntity(stringEntity);
         } else {
             throw new RuntimeException("Unsupported paramaters type.");
