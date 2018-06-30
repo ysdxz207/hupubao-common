@@ -21,8 +21,6 @@
 
 **其中包含的依赖有:**
 
-如有冲突请排除
-
 ```
 <dependency>
     <groupId>commons-io</groupId>
