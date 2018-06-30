@@ -50,6 +50,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,6 +121,16 @@ public class Page {
         return this;
     }
 
+    public Page loggerOn(Level level) {
+        logger.setLevel(level);
+        return this;
+    }
+
+    public Page loggerOff() {
+        logger.setLevel(Level.OFF);
+        return this;
+    }
+
     private HttpRequestBase getMethod(String url,
                                       String method,
                                       Object params) {
@@ -146,9 +157,14 @@ public class Page {
         if (params == null) {
             return new HttpGet(url);
         }
-        if (!(params instanceof JSONObject)) {
-            throw new RuntimeException("Get method paramaters should be JSONObject.");
+        if (!(params instanceof Map)) {
+            throw new RuntimeException("Get method paramaters should be JSONObject or Map.");
         }
+
+        if (params instanceof Map) {
+            params = JSON.parseObject(JSON.toJSONString(params));
+        }
+
         JSONObject paramsJSON = (JSONObject) params;
         URIBuilder builder;
         try {
@@ -168,6 +184,10 @@ public class Page {
 
         if (params == null) {
             return post;
+        }
+
+        if (params instanceof Map) {
+            params = JSON.parseObject(JSON.toJSONString(params));
         }
 
         if (params instanceof JSONObject) {
@@ -250,6 +270,7 @@ public class Page {
         Document document = new Document("");
         response.setDocument(document);
         try {
+            logger.log(Level.INFO, "Sending request to {0}", method.getURI());
             HttpResponse httpResponse = httpClient.execute(method, context);
 
             int statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -419,6 +440,7 @@ public class Page {
             super(message);
         }
     }
+
 }
 
 
