@@ -36,6 +36,14 @@ public class StringUtils {
          return !isBlank(obj);
     }
 
+    public static boolean isEmpty(Object obj) {
+        return obj == null  || obj.toString().isEmpty();
+    }
+
+    public static boolean isNotEmpty(Object obj) {
+        return !isEmpty(obj);
+    }
+
     public static Integer parseInteger(String str) {
         String regEx="[^0-9]";
         Pattern p = Pattern.compile(regEx);
@@ -118,5 +126,6 @@ public class StringUtils {
         }
         return dest;
     }
+
 
 }
