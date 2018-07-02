@@ -161,7 +161,7 @@ public class Page {
             throw new RuntimeException("Get method paramaters should be JSONObject or Map.");
         }
 
-        if (params instanceof Map) {
+        if (!(params instanceof JSONObject)) {
             params = JSON.parseObject(JSON.toJSONString(params));
         }
 
@@ -436,7 +436,7 @@ public class Page {
 
         private static final long serialVersionUID = 2515892027385048310L;
 
-        public UnsupportedJsonFormatException(String message) {
+        UnsupportedJsonFormatException(String message) {
             super(message);
         }
     }
