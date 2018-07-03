@@ -17,6 +17,7 @@
 
 package win.hupubao.common.beans;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -28,7 +29,9 @@ import java.math.RoundingMode;
  * @date 2018-06-29 22:17:57
  * 金额：元
  */
-public class Yuan {
+public class Yuan implements Serializable {
+
+    private static final long serialVersionUID = -7495825595798176907L;
 
     private final BigDecimal value;
 

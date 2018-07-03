@@ -16,10 +16,13 @@
 
 package win.hupubao.common.beans.sql;
 
+import java.io.Serializable;
+
 /**
  * 分页工具
  */
-public class PageLimit {
+public class PageLimit implements Serializable {
+    private static final long serialVersionUID = -7811841027767096741L;
     private int pageSize = 10;
     private int pageCurrent = 1;
 

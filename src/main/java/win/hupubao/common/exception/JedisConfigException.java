@@ -21,6 +21,8 @@ package win.hupubao.common.exception;
  * @date 2017-09-02
  */
 public class JedisConfigException extends RuntimeException {
+    private static final long serialVersionUID = 7232468717252903957L;
+
     public JedisConfigException() {
     }
 
