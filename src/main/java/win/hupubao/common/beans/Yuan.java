@@ -37,11 +37,10 @@ public class Yuan implements Serializable {
 
     public Yuan(BigDecimal value) {
         if (value == null) {
-            this.value = new BigDecimal(0);
-        } else {
-            this.value = new BigDecimal(value.setScale(2, RoundingMode.HALF_UP)
-                    .toPlainString());
+            value = new BigDecimal(0);
         }
+        this.value = new BigDecimal(value.setScale(2, RoundingMode.HALF_UP)
+                .toPlainString());
     }
 
     public Yuan(String val) {
