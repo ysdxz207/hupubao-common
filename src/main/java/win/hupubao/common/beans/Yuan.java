@@ -35,6 +35,10 @@ public class Yuan implements Serializable {
 
     private final BigDecimal value;
 
+    public Yuan() {
+        this.value =  new BigDecimal(0);
+    }
+
     public Yuan(BigDecimal value) {
         if (value == null) {
             value = new BigDecimal(0);
