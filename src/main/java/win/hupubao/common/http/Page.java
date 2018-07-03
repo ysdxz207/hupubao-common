@@ -371,7 +371,10 @@ public class Page {
              * body json string to json
              */
             try {
-                result = JSON.parseObject(document.body().text());
+                Element body = document.body();
+                if (body != null) {
+                    result = JSON.parseObject(body.text());
+                }
             } catch (Exception ignored) {
             }
 
