@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -274,7 +275,7 @@ public class Page {
             HttpResponse httpResponse = httpClient.execute(method, context);
 
             int statusCode = httpResponse.getStatusLine().getStatusCode();
-
+            response.setStatusCode(statusCode);
             HttpHost target = context.getTargetHost();
             List<URI> redirectLocations = context.getRedirectLocations();
             URI location = null;
@@ -302,7 +303,10 @@ public class Page {
                     return response;
                 }
             }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
             if (RETRY_TIMES > 0) {
                 RETRY_TIMES--;
                 logger.info("[Page request retry]:" + method.getURI());
@@ -337,14 +341,16 @@ public class Page {
     }
 
     public static class Response {
-
+        private int statusCode = 0;
         private Document document;
 
         public Response() {
             this.document = new Document("");
         }
 
-        public Response(Document document) {
+        public Response(int responseCode,
+                        Document document) {
+            this.statusCode = responseCode;
             this.document = document == null ? new Document("") : document;
         }
 
@@ -356,7 +362,7 @@ public class Page {
          * @return
          */
         public static Response parse(String htmlOrXml) {
-            return new Response(Jsoup.parse(htmlOrXml));
+            return new Response(HttpStatus.SC_OK, Jsoup.parse(htmlOrXml));
         }
 
         /**
@@ -421,9 +427,18 @@ public class Page {
             }
         }
 
+
         @Override
         public String toString() {
             return document.toString();
+        }
+
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        public void setStatusCode(int statusCode) {
+            this.statusCode = statusCode;
         }
 
         public Document getDocument() {
@@ -443,7 +458,6 @@ public class Page {
             super(message);
         }
     }
-
 }
 
 
