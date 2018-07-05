@@ -15,8 +15,7 @@
 
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.level>1.8</maven.compiler.level>
         <encoding>UTF-8</encoding>
     </properties>
 
@@ -155,8 +154,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>${maven.compiler.level}</source>
+                    <target>${maven.compiler.level}</target>
                     <fork>true</fork>
                     <verbose>true</verbose>
                     <compilerArguments>
@@ -164,6 +163,28 @@
                     </compilerArguments>
                     <encoding>${encoding}</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.10</version>
+                <configuration>
+                    <encoding>${encoding}</encoding>
+                    <complianceLevel>${maven.compiler.level}</complianceLevel>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- Compile and weave aspects after all classes compiled by javac -->
+                        <!--<phase>process-classes</phase>-->
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>${maven.compiler.level}</source>
+                            <target>${maven.compiler.level}</target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
@@ -241,6 +262,34 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>aspectj-maven-plugin</artifactId>
+                        <version>1.10</version>
+                        <configuration>
+                            <encoding>${encoding}</encoding>
+                            <complianceLevel>${maven.compiler.level}</complianceLevel>
+                            <aspectLibraries>
+                                <aspectLibrary>
+                                    <groupId>win.hupubao</groupId>
+                                    <artifactId>hupubao-common</artifactId>
+                                </aspectLibrary>
+                            </aspectLibraries>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <!-- Compile and weave aspects after all classes compiled by javac -->
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${maven.compiler.level}</source>
+                                    <target>${maven.compiler.level}</target>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
