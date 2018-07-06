@@ -38,11 +38,9 @@
 
 ```java
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @LogRequestResponseArgs("书架接口")
-public static void bookShelf(HttpServletRequest request,
-                             HttpServletResponse response) {
+public static void bookShelf(HttpServletRequest request) {
 
     //Your code.
 }
