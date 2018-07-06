@@ -10,7 +10,7 @@
     <version>1.0.7</version>
     <name>hupubao-common</name>
     <packaging>jar</packaging>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/ysdxz207/hupubao-common</url>
     <description>简单封装公共工具，二维码工具，驼峰转换工具，des加解密工具，http访问工具，字符串工具，日期工具</description>
 
 
