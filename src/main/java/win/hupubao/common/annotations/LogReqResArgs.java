@@ -30,11 +30,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
-public @interface LogRequestResponseArgs {
+public @interface LogReqResArgs {
     /**
-     * 日志头，默认值为RequestMapping的路径
+     * 请求参数日志头，默认值为RequestMapping的路径，若无注解则是方法名
      * @return
      */
-    public String value() default "";
+    public String title() default "";
+    public String titleRequest() default "request parameters:";
+    public String titleResponse() default "response parameters:";
+    public String titleException() default "exception:";
     public boolean logException() default true;
 }

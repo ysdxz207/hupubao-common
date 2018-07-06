@@ -51,8 +51,36 @@ public class LoggerUtils {
         return LoggerFactory.getLogger(clazz);
     }
 
+    public static void warn(Throwable t) {
+        getLogger().warn(null, t);
+    }
+
+    public static void warn(String message) {
+        getLogger().warn(message);
+    }
+
+    public static void warn(String message,
+                             Throwable t) {
+        getLogger().warn(message, t);
+    }
+
+    public static void warn(Class clazz,
+                             String message) {
+        getLogger(clazz).warn(message);
+    }
+
+    public static void warn(Class clazz,
+                             String message,
+                             Throwable t) {
+        getLogger(clazz).warn(message, t);
+    }
+
     public static void debug(Throwable t) {
-        debug(null, t);
+        getLogger().debug(null, t);
+    }
+
+    public static void debug(String message) {
+        getLogger().debug(message);
     }
 
     public static void debug(String message,
@@ -72,7 +100,11 @@ public class LoggerUtils {
     }
 
     public static void info(Throwable t) {
-        info(null, t);
+        getLogger().info(null, t);
+    }
+
+    public static void info(String message) {
+        getLogger().info(message);
     }
 
     public static void info(String message,
@@ -92,7 +124,11 @@ public class LoggerUtils {
     }
 
     public static void error(Throwable t) {
-        error(null, t);
+        getLogger().error(null, t);
+    }
+
+    public static void error(String message) {
+        getLogger().error(message);
     }
 
     public static void error(String message,

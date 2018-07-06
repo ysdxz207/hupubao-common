@@ -18,15 +18,16 @@ package win.hupubao.common.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import win.hupubao.common.annotations.LogRequestResponseArgs;
+import win.hupubao.common.annotations.LogReqResArgs;
 import win.hupubao.common.utils.LoggerUtils;
+import win.hupubao.common.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,89 +43,90 @@ import java.util.Enumeration;
  *
  */
 @Aspect
-public class LogRequestResponseArgsHandler {
+public class LogReqResArgsHandler {
 
-    public LogRequestResponseArgsHandler() {
+    public LogReqResArgsHandler() {
     }
 
 
     /**
      * 请求日志记录
      * @param joinPoint
-     * @param logRequestResponseArgs
+     * @param logReqResArgs
      */
-    @Before("@annotation(logRequestResponseArgs)")
+    @Before("execution(* *(..)) && @annotation(logReqResArgs)")
     public void before(JoinPoint joinPoint,
-                       LogRequestResponseArgs logRequestResponseArgs) {
-        try {
-            doLog(joinPoint, logRequestResponseArgs, "receive", null);
-        } catch (Exception e) {
-            LoggerUtils.error("[LogRequestResponseArgsHandler before]记录日志异常：", e);
+                       LogReqResArgs logReqResArgs) {
+        Object[] args = joinPoint.getArgs();
+
+        HttpServletRequest request = null;
+        for (Object obj : args) {
+            if (obj instanceof HttpServletRequest) {
+                request = (HttpServletRequest) obj;
+            }
+        }
+        if (request != null) {
+            doLog(joinPoint, logReqResArgs, request);
+        } else {
+            LoggerUtils.warn(getClass(), "Method [" + getMethod(joinPoint).getName() + "] with annotation [LogReqResArgs] should have HttpServletRequest type parameters.");
         }
     }
 
     /**
      * 响应日志记录
      * @param joinPoint
-     * @param logRequestResponseArgs
+     * @param logReqResArgs
      */
-    @AfterReturning(pointcut = "@annotation(logRequestResponseArgs)", returning = "returnValue")
+    @AfterReturning(pointcut = "execution(* *(..)) && @annotation(logReqResArgs)", returning = "returnValue")
     public void AfterReturning(JoinPoint joinPoint,
-                               LogRequestResponseArgs logRequestResponseArgs,
+                               LogReqResArgs logReqResArgs,
                                Object returnValue) {
-        try {
-            doLog(joinPoint, logRequestResponseArgs, "feedback", returnValue);
-        } catch (Exception e) {
-            LoggerUtils.error("[LogRequestResponseArgsHandler after]记录日志异常：", e);
+        doLog(joinPoint, logReqResArgs, returnValue);
+    }
+
+    /**
+     * 异常日志记录
+     * @param joinPoint
+     * @param logReqResArgs
+     * @param throwable
+     */
+    @AfterThrowing(pointcut = "execution(* *(..)) && @annotation(logReqResArgs)", throwing = "throwable")
+    public void AfterThrowing(JoinPoint joinPoint,
+                              LogReqResArgs logReqResArgs,
+                              Throwable throwable) {
+        if (logReqResArgs.logException()) {
+            doLog(joinPoint, logReqResArgs, throwable);
         }
     }
 
     /**
      * 公共记录日志方法
      * @param joinPoint
-     * @param logRequestResponseArgs
-     * @param tag
+     * @param logReqResArgs
+     * @param info
      */
     private void doLog(JoinPoint joinPoint,
-                       LogRequestResponseArgs logRequestResponseArgs,
-                       String tag,
-                       Object returnValue) {
+                       LogReqResArgs logReqResArgs,
+                       Object info) {
         Method targetMethod = getMethod(joinPoint);
         StringBuilder sb = new StringBuilder();
-        String title = logRequestResponseArgs.value();
-
-        if (StringUtils.isNotBlank(title)) {
-            sb.append(title);
-        } else {
-            sb.append(getDefaultTitle(targetMethod));
-        }
-
-        Object[] args = joinPoint.getArgs();
-
-        HttpServletRequest request = null;
-        HttpServletResponse response = null;
-        for (Object obj : args) {
-            if (obj instanceof HttpServletRequest) {
-                request = (HttpServletRequest) obj;
-            }
-            if (obj instanceof HttpServletResponse) {
-                response = (HttpServletResponse) obj;
-            }
-        }
-
-        if (request == null
-                || response == null) {
-            throw new RuntimeException("使用[LogRequestResponseArgs]注解的方法必须有[HttpServletRequest和HttpServletResponse]参数:" + targetMethod.getName());
-        }
-
 
         sb.append("[");
-        sb.append(tag);
+        sb.append(StringUtils.isNotBlank(logReqResArgs.title()) ? logReqResArgs.title() : getDefaultTitle(targetMethod));
         sb.append("]");
-        sb.append(":");
-        sb.append("receive".equalsIgnoreCase(tag) ? getArgsString(request) : JSON.toJSONString(returnValue));
-
-        LoggerUtils.info(joinPoint.getTarget().getClass(), sb.toString());
+        if (info instanceof Throwable) {
+            sb.append(logReqResArgs.titleException());
+            LoggerUtils.info(targetMethod.getDeclaringClass(), sb.toString(), (Throwable) info);
+            return;
+        }
+        if (info instanceof HttpServletRequest){
+            sb.append(logReqResArgs.titleRequest());
+            sb.append(JSON.toJSONString(getRequestArgs((HttpServletRequest) info)));
+        } else {
+            sb.append(logReqResArgs.titleResponse());
+            sb.append(JSON.toJSONString(info));
+        }
+        LoggerUtils.info(targetMethod.getDeclaringClass(), sb.toString());
     }
 
 
@@ -167,7 +169,7 @@ public class LogRequestResponseArgsHandler {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private String getArgsString(HttpServletRequest request) {
+    private JSONObject getRequestArgs(HttpServletRequest request) {
         try {
             JSONObject jsonArgs = new JSONObject();
             Enumeration<String> args = request.getParameterNames();
@@ -176,11 +178,21 @@ public class LogRequestResponseArgsHandler {
                 String key = args.nextElement();
                 jsonArgs.put(key, request.getParameter(key));
             }
-
-            return jsonArgs.toJSONString();
+            return jsonArgs;
         } catch (Exception e) {
-            return "";
+            return null;
         }
     }
 
+    class LogReqResArgsInvalidParameterException extends RuntimeException {
+
+        private static final long serialVersionUID = -1595991881883221808L;
+
+        public LogReqResArgsInvalidParameterException() {
+        }
+
+        public LogReqResArgsInvalidParameterException(String message) {
+            super(message);
+        }
+    }
 }
