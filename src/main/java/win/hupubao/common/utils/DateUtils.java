@@ -18,28 +18,51 @@ package win.hupubao.common.utils;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateUtils {
 
+
     /**
-     * 获取最近n天日期，n可为负数
-     * @param days
+     * 获取最近n月的第一天日期，n可为负数
+     * @param months
      * @return
      */
-    public static Date getNowDate(int days) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, 24 * days);
+    public static Date getMonthFirstOrLastDay(int months,
+                                              boolean isLastDay,
+                                              boolean isZeroClock) {
+
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, months);
+
+        if (isLastDay) {
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        } else {
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        if (isZeroClock) {
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+        }
         return calendar.getTime();
     }
 
     /**
-     * 获取当天零点日期毫秒
+     * 获取当天零点日期
+     *
+     * @param date
      * @return
      */
-    public static Long getTodayZeroMiliseconds() {
-        Long daySeconds = 60 * 60 * 1000L;
-        Long nowSeconds = System.currentTimeMillis();
-        return nowSeconds - nowSeconds % daySeconds;
+    public static Date getZeroClockByDate(Date date) {
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTime();
     }
 
 }
