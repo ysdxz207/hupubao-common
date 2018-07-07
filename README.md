@@ -2,6 +2,17 @@
 
 简单封装的公共模块，方便开发使用
 
+**使用方法**
+
+```xml
+
+<dependency>
+    <groupId>win.hupubao</groupId>
+    <artifactId>hupubao-common</artifactId>
+    <version>1.0.7</version>
+</dependency>
+```
+
 **包含：**
 
 - 日期工具
