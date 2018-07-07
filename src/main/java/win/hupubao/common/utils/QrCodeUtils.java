@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
 public class QrCodeUtils {
 
     private static final String ENCODING = "UTF-8";
-    private static final Pattern PATTERN_BLANK = Pattern.compile("\\s*|\t|\r|\n");
 
     public static boolean base64ToImg(String base64, String filepath) {
 
