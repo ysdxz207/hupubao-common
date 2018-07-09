@@ -7,6 +7,7 @@
 
 ```java
 
+
 import org.apache.commons.lang3.time.DateFormatUtils;
 import win.hupubao.common.utils.DateUtils;
 
@@ -23,12 +24,10 @@ public class TestDateUtils {
         System.out.println(DateFormatUtils.format(todayZeroClock,
                 FORMAT_PATTERN));
 
-        //获取这月第一天零点日期
-        System.out.println(DateFormatUtils.format(DateUtils.getMonthFirstOrLastDay(0,
-                false,
-                true),
+        //获取这月第一天日期
+        System.out.println(DateFormatUtils.format(DateUtils.getMonthDay(0,
+                DateUtils.MonthDay.FIRST_DAY),
                 FORMAT_PATTERN));
-        
     }
 }
 

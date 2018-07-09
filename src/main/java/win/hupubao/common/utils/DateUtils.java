@@ -20,41 +20,48 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * @author Moses
+ * @date 2018-07-09
+ */
 public class DateUtils {
 
+    public enum MonthDay {
+        FIRST_DAY,//第一天
+        LAST_DAY,//最后一天
+        NOW//现在的时间
+    }
 
     /**
-     * 获取最近n月的第一天日期，n可为负数
-     * @param months
-     * @return
+     * 获取最近months月的某天
+     * @param months 最近月数，可为负数
+     * @param monthDay 某天，参考:win.hupubao.common.utils.DateUtils.MonthDay
+     * @return 最近月数的某天
      */
-    public static Date getMonthFirstOrLastDay(int months,
-                                              boolean isLastDay,
-                                              boolean isZeroClock) {
+    public static Date getMonthDay(int months,
+                                   MonthDay monthDay) {
 
         Calendar calendar = Calendar.getInstance(Locale.CHINA);
         calendar.setTime(new Date());
         calendar.add(Calendar.MONTH, months);
 
-        if (isLastDay) {
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        } else {
-            calendar.set(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        if (isZeroClock) {
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
+        switch (monthDay) {
+            case NOW:
+                break;
+            case FIRST_DAY:
+                calendar.set(Calendar.DAY_OF_MONTH, 1);
+                break;
+            case LAST_DAY:
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                break;
         }
         return calendar.getTime();
     }
 
     /**
-     * 获取当天零点日期
-     *
-     * @param date
-     * @return
+     * 获取某日期的零点日期
+     * @param date 日期参数
+     * @return 零点日期
      */
     public static Date getZeroClockByDate(Date date) {
         Calendar calendar = Calendar.getInstance(Locale.CHINA);
