@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Moses
+ * @author L.feihong
  * @date 2017-08-30
  */
 public class ListUtils {

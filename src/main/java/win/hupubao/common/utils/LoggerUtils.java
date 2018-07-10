@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Moses
+ * @author L.feihong
  * @date 2018-05-24 15:01:20
  * 日志记录工具
  */

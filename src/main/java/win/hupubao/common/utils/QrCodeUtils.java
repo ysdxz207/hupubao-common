@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * @author Moses
+ * @author L.feihong
  * @date 2017-08-09
  */
 public class QrCodeUtils {

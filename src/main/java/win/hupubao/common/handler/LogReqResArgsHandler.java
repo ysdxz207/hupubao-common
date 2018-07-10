@@ -37,7 +37,7 @@ import java.util.Enumeration;
 
 /**
  *
- * @author Moses
+ * @author L.feihong
  * @date 2018-06-11 14:05:53
  * 请求，返回参数日志记录工具
  *
