@@ -235,15 +235,4 @@ public class Email implements Serializable {
         mimeMessage.saveChanges();
         Transport.send(mimeMessage);
     }
-
-    private class EmailNotConfigedExeption extends RuntimeException{
-        private static final long serialVersionUID = 7544746335607654338L;
-
-        public EmailNotConfigedExeption() {
-        }
-
-        EmailNotConfigedExeption(String message) {
-            super(message);
-        }
-    }
 }

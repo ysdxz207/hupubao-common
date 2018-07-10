@@ -49,10 +49,8 @@ public class ExceptionEmailSender {
         return this;
     }
 
-    public void sendException(String title,
-                              Throwable ex) {
+    public void sendException(Throwable ex) {
         try {
-            sendTo.setTitle(title);
             sendTo.setContent(getExceptionTableString(ex));
             email.send(sendTo);
         } catch (Exception e) {
