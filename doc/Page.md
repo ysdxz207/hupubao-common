@@ -36,3 +36,23 @@ public class TestPage {
 }
 
 ```
+
+- 重要
+
+最近爆发了微信xxe攻击问题，本工具因为使用了Jsoup解析xml，并无此问题，
+Jsoup会把xml解析成如下：
+```xml
+<!--?xml version="1.0" encoding="utf-8"?--><!doctype xdsec>
+<!--ENTITY xxe SYSTEM "file:///C:/Users/Administrator/Desktop/aa.txt" -->
+<html>
+ <head></head>
+ <body>
+  ]&gt; 
+  <test> 
+   <content>
+    &amp;xxe;
+   </content> 
+  </test>
+ </body>
+</html>
+```
