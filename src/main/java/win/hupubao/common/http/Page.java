@@ -17,6 +17,7 @@
 package win.hupubao.common.http;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -42,6 +43,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import win.hupubao.common.utils.XmlUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -354,79 +356,31 @@ public class Page {
             this.document = document == null ? new Document("") : document;
         }
 
-
         /**
          * 解析html或xml
          *
          * @param htmlOrXml
          * @return
          */
-        public static Response parse(String htmlOrXml) {
-            return new Response(HttpStatus.SC_OK, Jsoup.parse(htmlOrXml));
+        public static Page.Response parse(String htmlOrXml) {
+            return new Page.Response(HttpStatus.SC_OK, Jsoup.parse(htmlOrXml));
         }
 
         /**
+         * 返回结果内容转Json
+         * 支持的body类型：json 字符串，xml字符串
          * @param extractXMLCDATA 是否提取CDATA值
          * @return
-         * @throws UnsupportedJsonFormatException
+         * @throws XmlUtils.UnsupportedJsonFormatException
          */
-        public JSONObject bodyToJSONObject(boolean extractXMLCDATA) throws UnsupportedJsonFormatException {
-            JSONObject result = null;
-
-            /*
-             * body json string to json
-             */
-            try {
-                Element body = document.body();
-                if (body != null) {
-                    result = JSON.parseObject(body.text());
-                }
-            } catch (Exception ignored) {
+        public JSON bodyToJson(boolean extractXMLCDATA) {
+            if (document == null
+                    || document.body() == null) {
+                return new JSONObject();
             }
-
-            /*
-             * body to json
-             */
-
-            if (result == null) {
-                Object o = convertToJson(document.body(), extractXMLCDATA);
-                if (o instanceof JSONObject) {
-                    result = (JSONObject) o;
-                }
-            }
-
-            if (result == null) {
-                throw new UnsupportedJsonFormatException("Body can not convert to json.");
-            }
-            return result;
+            Element body = document.body();
+            return XmlUtils.xmlToJson(body.text(), extractXMLCDATA);
         }
-
-        public JSONObject bodyToJSONObject() throws UnsupportedJsonFormatException {
-            return bodyToJSONObject(false);
-        }
-
-        /**
-         * 支持的body类型：json 字符串，xml字符串
-         *
-         * @param element
-         * @return
-         */
-        private Object convertToJson(Element element,
-                                     boolean extractXMLCDATA) {
-            JSONObject json = new JSONObject();
-            Elements children = element.children();
-            int childSize = children.size();
-
-            if (childSize == 0) {
-                return extractXMLCDATA ? element.text() : element.html();
-            } else {
-                for (Element e : element.children()) {
-                    json.put(e.tagName(), convertToJson(e, extractXMLCDATA));
-                }
-                return json;
-            }
-        }
-
 
         @Override
         public String toString() {
@@ -450,14 +404,7 @@ public class Page {
         }
     }
 
-    private static class UnsupportedJsonFormatException extends RuntimeException {
 
-        private static final long serialVersionUID = 2515892027385048310L;
-
-        UnsupportedJsonFormatException(String message) {
-            super(message);
-        }
-    }
 }
 
 

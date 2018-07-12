@@ -31,7 +31,7 @@ public class TestPage {
                         paramsXml,
                         Connection.Method.POST);
 
-        System.out.println(responsePost);
+        System.out.println(responsePost.bodyToJson(false));
     }
 }
 
