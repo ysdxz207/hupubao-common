@@ -28,6 +28,7 @@
 - [金额：元，默认精度为2](./doc/Yuan.md)
 - [http访问工具](./doc/Page.md)
 - [注解记录日志工具](doc/LogReqResArgs.md)
+- [捕获异常并发送邮件工具](doc/ExceptionEmailSender.md)
 
 
 
@@ -123,4 +124,11 @@
     <artifactId>aspectjweaver</artifactId>
     <version>1.9.1</version>
 </dependency>
+<!-- email dependency -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-email</artifactId>
+    <version>1.5</version>
+</dependency>
+
 ```
