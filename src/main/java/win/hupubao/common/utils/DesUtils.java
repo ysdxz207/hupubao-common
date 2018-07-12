@@ -148,10 +148,4 @@ public class DesUtils {
 		}
 		return b2;
 	}
-	
-	public static synchronized int parseMoney(Double money){
-		BigDecimal bd1 = new BigDecimal(Double.toString(money));
-	    BigDecimal bd2 = new BigDecimal(Double.toString(100));
-	    return (int) Math.floor(bd1.multiply(bd2).doubleValue());
-	}
 }
