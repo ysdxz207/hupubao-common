@@ -41,9 +41,26 @@
 ```java
 import javax.servlet.http.HttpServletRequest;
 
-@LogRequestResponseArgs("书架接口")
-public static void bookShelf(HttpServletRequest request) {
+@LogReqResArgs(title = "书架接口")
+public static Object bookShelf(HttpServletRequest request) {
 
     //Your code.
+    return null;
 }
 ```
+
+3.注意：参数必须有HttpServletRequest类型参数，
+若需要记录返回参数日志，则方法需要返回值。
+
+4.注解详细参数
+
+|参数名|描述|类型|默认值|
+| :------: | :------: | :------: | :------: |
+|title|日志头描述|String|@RequestMapping路径或方法名|
+|titleRequest|日志请求参数头描述|String|request parameters:|
+|titleResponse|日志返回参数头描述|String|response parameters:|
+|titleException|日志异常头描述|String|exception:|
+|logException|是否记录异常日志|boolean|true|
+
+5.输出日志样例
+
