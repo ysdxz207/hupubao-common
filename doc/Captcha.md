@@ -15,7 +15,7 @@ public class TestCaptcha {
     public static void main(String[] args) throws IOException {
 
         //生成BufferedImage
-        Captcha captchaBufferedImage = new Captcha();
+        Captcha captchaBufferedImage = Captcha.create();
         BufferedImage bufferedImage = captchaBufferedImage
                 .noiseLineNum(30)
                 .noiseRate(0.36f)
@@ -23,7 +23,7 @@ public class TestCaptcha {
                 .backgroundColorBounds(new Captcha.ColorBounds("#444444", "#999955")).generateCaptchaImage();
         ImageIO.write(bufferedImage, "jpg", new File("D://" + captchaBufferedImage.getCaptchaCode() + ".jpg"));
         //生成base64
-        String imageBase64 = new Captcha()
+        String imageBase64 = Captcha.create()
                 .captchaLength(6).generateCaptchaImageBase64();
         System.out.println(imageBase64);
 
