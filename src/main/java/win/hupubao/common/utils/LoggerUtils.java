@@ -59,6 +59,11 @@ public class LoggerUtils {
         getLogger().warn(message);
     }
 
+    public static void warn(String format,
+                             Object... args) {
+        getLogger().warn(format, args);
+    }
+
     public static void warn(String message,
                              Throwable t) {
         getLogger().warn(message, t);
@@ -83,6 +88,11 @@ public class LoggerUtils {
         getLogger().debug(message);
     }
 
+    public static void debug(String format,
+                             Object... args) {
+        getLogger().debug(format, args);
+    }
+
     public static void debug(String message,
                             Throwable t) {
         getLogger().debug(message, t);
@@ -103,8 +113,14 @@ public class LoggerUtils {
         getLogger().info(null, t);
     }
 
+
     public static void info(String message) {
         getLogger().info(message);
+    }
+
+    public static void info(String format,
+                            Object... args) {
+        getLogger().info(format, args);
     }
 
     public static void info(String message,
@@ -129,6 +145,11 @@ public class LoggerUtils {
 
     public static void error(String message) {
         getLogger().error(message);
+    }
+
+    public static void error(String format,
+                            Object... args) {
+        getLogger().error(format, args);
     }
 
     public static void error(String message,
