@@ -35,7 +35,7 @@ import static java.util.regex.Pattern.compile;
 public class RSAKeyUtils {
 
 
-    private static String ALGORITHMS = "RSA";
+    private static final String ALGORITHMS = "RSA";
 
     /**
      * 密钥长度
