@@ -29,8 +29,8 @@
 - [http访问工具](./doc/Page.md)
 - [注解记录日志工具](doc/LogReqResArgs.md)
 - [捕获异常并发送邮件工具](doc/ExceptionEmailSender.md)
-- [传统验证码生成工具](doc/Captcha.md)
-- [RSA工具](doc/RSAUtils.md)
+- [传统验证码生成工具](doc/Captcha.md)(v1.1.1)
+- [RSA工具](doc/RSAUtils.md)(v1.1.1)
 
 
 
