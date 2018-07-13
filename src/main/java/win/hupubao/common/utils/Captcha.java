@@ -89,18 +89,8 @@ public class Captcha {
 
     private String captchaCode;
 
-    public static Captcha getInstance() {
-        return Captcha.CaptchaInstance.INSTANCE.singleton;
-    }
-
-    private enum CaptchaInstance {
-        INSTANCE;
-
-        CaptchaInstance() {
-            singleton = new Captcha();
-        }
-
-        private Captcha singleton;
+    public static Captcha create() {
+        return new Captcha();
     }
 
     public Captcha width(int width) {
@@ -157,7 +147,7 @@ public class Captcha {
         return captchaCode;
     }
 
-    static class ColorBounds {
+    public static class ColorBounds {
         private String start = "#999999";
         private String end = "#EEEEEE";
 
