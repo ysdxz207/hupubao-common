@@ -55,7 +55,7 @@ public static Object bookShelf(HttpServletRequest request) {
 4.注解详细参数
 
 |参数名|描述|类型|默认值|
-| :------: | :------: | :------: | :------: |
+| :------: | :------: | :------: | :------|
 |title|日志头描述|String|@RequestMapping路径或方法名|
 |titleRequest|日志请求参数头描述|String|request parameters:|
 |titleResponse|日志返回参数头描述|String|response parameters:|
