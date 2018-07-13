@@ -36,6 +36,7 @@ import javax.imageio.ImageIO;
 
 /**
  * 传统验证码生成器
+ *
  * @author feihong
  * @date 2018-07-12
  */
@@ -43,7 +44,7 @@ public class Captcha {
 
     private static final Random random = new Random();
     private static final Pattern PATTERN_COLOR = Pattern.compile("^#([0-9a-fA-F]{6})$");
-
+    private static final String CHARACTERS = "23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
 
     /**
      * Base64 image prefix.
@@ -86,6 +87,10 @@ public class Captcha {
      * Noise line numbers.
      */
     private static int NOISE_LINE_NUM = 20;
+    /**
+     * Exclude similer character or not.
+     */
+    private static boolean EXCLUDE_SIMILER_CHARACTER = true;
 
     private String captchaCode;
 
@@ -143,6 +148,12 @@ public class Captcha {
         return this;
     }
 
+    public Captcha isExcludeSimilerCharacter(boolean excludeSimilerCharacter) {
+        EXCLUDE_SIMILER_CHARACTER = excludeSimilerCharacter;
+        return this;
+    }
+
+
     public String getCaptchaCode() {
         return captchaCode;
     }
@@ -194,7 +205,11 @@ public class Captcha {
      * @throws IOException
      */
     public BufferedImage generateCaptchaImage() {
-        this.captchaCode = RandomStringUtils.randomAlphanumeric(CAPTCHA_LENGTH);
+        if (EXCLUDE_SIMILER_CHARACTER) {
+            this.captchaCode = generateChapterCodeWithoutSimilerCharacters();
+        } else {
+            this.captchaCode = RandomStringUtils.randomAlphanumeric(CAPTCHA_LENGTH);
+        }
         BufferedImage image = new BufferedImage(Captcha.WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = image.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -318,5 +333,15 @@ public class Captcha {
         int g = startGInt + random.nextInt(endGInt - startGInt);
         int b = startBInt + random.nextInt(endBInt - startBInt);
         return new Color(r, g, b);
+    }
+
+    private static String generateChapterCodeWithoutSimilerCharacters() {
+        int codesLen = CHARACTERS.length();
+        Random rand = new Random(System.currentTimeMillis());
+        StringBuilder sb = new StringBuilder(CAPTCHA_LENGTH);
+        for (int i = 0; i < CAPTCHA_LENGTH; i++) {
+            sb.append(CHARACTERS.charAt(rand.nextInt(codesLen - 1)));
+        }
+        return sb.toString();
     }
 }

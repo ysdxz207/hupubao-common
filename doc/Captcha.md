@@ -4,6 +4,7 @@
 
 ```java
 
+
 import win.hupubao.common.utils.Captcha;
 
 import javax.imageio.ImageIO;
@@ -17,8 +18,13 @@ public class TestCaptcha {
         //生成BufferedImage
         Captcha captchaBufferedImage = Captcha.create();
         BufferedImage bufferedImage = captchaBufferedImage
-                .noiseLineNum(30)
-                .noiseRate(0.36f)
+                //是否排除相似字母
+                .isExcludeSimilerCharacter(false)
+                .captchaLength(5)
+                .width(80)
+                .height(34)
+                .noiseLineNum(10)
+                .noiseRate(0.06f)
                 .captchaCharacterColorBounds(new Captcha.ColorBounds("#994444", "#CC5555"))
                 .backgroundColorBounds(new Captcha.ColorBounds("#444444", "#999955")).generateCaptchaImage();
         ImageIO.write(bufferedImage, "jpg", new File("D://" + captchaBufferedImage.getCaptchaCode() + ".jpg"));
@@ -29,4 +35,5 @@ public class TestCaptcha {
 
     }
 }
+
 ```
