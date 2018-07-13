@@ -29,12 +29,21 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+/**
+ * 传统验证码生成器
+ * @author feihong
+ * @date 2018-07-12
+ */
 public class Captcha {
 
-    private final static Random random = new Random();
+    private static final Random random = new Random();
+    private static final Pattern PATTERN_COLOR = Pattern.compile("^#([0-9a-fA-F]{6})$");
+
 
     /**
      * Base64 image prefix.
@@ -64,24 +73,33 @@ public class Captcha {
     /**
      * Bounds of captcha image noise line color.
      */
-    private ColorBounds NOISE_LINE_COLOR_BOUNDS = new ColorBounds("#999999", "#EEEEEE");
+    private ColorBounds NOISE_LINE_COLOR_BOUNDS = new ColorBounds("#666633", "#997744");
     /**
      * Bounds of captcha image background color.
      */
-    private ColorBounds BACKGROUND_COLOR_BOUNDS = new ColorBounds("#AAAAAA", "#FFFFFF");
+    private ColorBounds BACKGROUND_COLOR_BOUNDS = new ColorBounds("#BBBBBB", "#CCCCCC");
     /**
      * Bounds of captcha character color.
      */
-    private ColorBounds CAPTCHA_CHARACTER_COLOR_BOUNDS = new ColorBounds("#888888", "#AAAAAA");
+    private static ColorBounds CAPTCHA_CHARACTER_COLOR_BOUNDS = new ColorBounds("#554444", "#886677");
+    /**
+     * Noise line numbers.
+     */
+    private static int NOISE_LINE_NUM = 20;
+
+    private String captchaCode;
 
     public static Captcha getInstance() {
         return Captcha.CaptchaInstance.INSTANCE.singleton;
     }
+
     private enum CaptchaInstance {
         INSTANCE;
+
         CaptchaInstance() {
             singleton = new Captcha();
         }
+
         private Captcha singleton;
     }
 
@@ -130,10 +148,18 @@ public class Captcha {
         return this;
     }
 
+    public Captcha noiseLineNum(int noiseLineNum) {
+        NOISE_LINE_NUM = noiseLineNum;
+        return this;
+    }
+
+    public String getCaptchaCode() {
+        return captchaCode;
+    }
 
     static class ColorBounds {
         private String start = "#999999";
-        private String end = "#FFFFFF";
+        private String end = "#EEEEEE";
 
         public ColorBounds(String start, String end) {
             this.start = start;
@@ -159,10 +185,11 @@ public class Captcha {
 
     /**
      * Generate a base64 captcha image.
+     *
      * @return
      * @throws IOException
      */
-    public String generateCaptchaImageBase64() throws IOException{
+    public String generateCaptchaImageBase64() throws IOException {
         BufferedImage bufferedImage = generateCaptchaImage();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "jpg", outputStream);
@@ -177,59 +204,49 @@ public class Captcha {
      * @throws IOException
      */
     public BufferedImage generateCaptchaImage() {
-        String captchaCode = RandomStringUtils.randomAlphanumeric(CAPTCHA_LENGTH);
+        this.captchaCode = RandomStringUtils.randomAlphanumeric(CAPTCHA_LENGTH);
         BufferedImage image = new BufferedImage(Captcha.WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = image.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Color[] colors = new Color[5];
-        Color[] colorSpaces = new Color[]{Color.WHITE, Color.CYAN,
-                Color.GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE,
-                Color.PINK, Color.YELLOW};
-        float[] fractions = new float[colors.length];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = colorSpaces[random.nextInt(colorSpaces.length)];
-            fractions[i] = random.nextFloat();
-        }
-        Arrays.sort(fractions);
-
-        graphics2D.setColor(getRandomColor(NOISE_LINE_COLOR_BOUNDS));// 干扰线颜色
+        // Background color.
+        Color bgColor = getRandomColor(BACKGROUND_COLOR_BOUNDS);
+        graphics2D.setColor(bgColor);
         graphics2D.fillRect(0, 0, WIDTH, HEIGHT);
 
-        Color bgColor = getRandomColor(BACKGROUND_COLOR_BOUNDS);
-        graphics2D.setColor(bgColor);// 背景色
-        graphics2D.fillRect(0, 2, WIDTH, HEIGHT - 4);
-
-        //绘制干扰线
-        graphics2D.setColor(getRandomColor(NOISE_LINE_COLOR_BOUNDS));// 干扰线颜色
-        for (int i = 0; i < 20; i++) {
-            int x = random.nextInt(WIDTH - 1);
-            int y = random.nextInt(HEIGHT - 1);
-            int xl = random.nextInt(6) + 1;
-            int yl = random.nextInt(12) + 1;
-            graphics2D.drawLine(x, y, x + xl + 40, y + yl + 20);
+        //Draw noise line.
+        if (NOISE_LINE_NUM > 0) {
+            graphics2D.setColor(getRandomColor(NOISE_LINE_COLOR_BOUNDS));
+            for (int i = 0; i < NOISE_LINE_NUM; i++) {
+                int x = random.nextInt(WIDTH - 1);
+                int y = random.nextInt(HEIGHT - 1);
+                int xl = random.nextInt(6) + 1;
+                int yl = random.nextInt(12) + 1;
+                graphics2D.drawLine(x, y, x + xl + 40, y + yl + 20);
+            }
         }
 
+        //Noise point.
         int area = (int) (NOISE_RATE * WIDTH * HEIGHT);
         for (int i = 0; i < area; i++) {
-            int x = random.nextInt(WIDTH);
-            int y = random.nextInt(HEIGHT);
-            int rgb = getRandomIntColor();
-            image.setRGB(x, y, rgb);
+            int xxx = random.nextInt(WIDTH);
+            int yyy = random.nextInt(HEIGHT);
+            int rgb = getRandomColor(NOISE_LINE_COLOR_BOUNDS).getRGB();
+            image.setRGB(xxx, yyy, rgb);
         }
 
+        //Shear image.
         shear(graphics2D, WIDTH, HEIGHT, bgColor);
 
-        graphics2D.setColor(getRandomColor(CAPTCHA_CHARACTER_COLOR_BOUNDS));
-        int fontSize = WIDTH / CAPTCHA_LENGTH;
-        Font font = new Font("Serif", Font.ITALIC, fontSize);
-        graphics2D.setFont(font);
-
-        char[] chars = captchaCode.toCharArray();
-        for (int i = 0; i < CAPTCHA_LENGTH; i++) {
-            AffineTransform affine = new AffineTransform();
-            affine.setToRotation(Math.PI / 4 * random.nextDouble() * (random.nextBoolean() ? 1 : -1), (WIDTH / CAPTCHA_LENGTH) * i + fontSize / 2, HEIGHT / 2);
-            graphics2D.setTransform(affine);
-            graphics2D.drawChars(chars, i, 1, ((WIDTH - 10) / CAPTCHA_LENGTH) * i + 5, HEIGHT / 2 + fontSize / 2 - 10);
+        //Captcha characters.
+        int fontSize = (int) (HEIGHT * 0.8);
+        int fx = 0;
+        int fy;
+        graphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
+        for (int i = 0; i < captchaCode.length(); i++) {
+            fy = (int) ((Math.random() * 0.3 + 0.6) * HEIGHT);
+            graphics2D.setColor(getRandomColor(CAPTCHA_CHARACTER_COLOR_BOUNDS));
+            graphics2D.drawString(captchaCode.charAt(i) + "", fx, fy);
+            fx += (WIDTH / captchaCode.length()) * (Math.random() * 0.3 + 0.8);
         }
 
         graphics2D.dispose();
@@ -237,24 +254,6 @@ public class Captcha {
         return image;
     }
 
-
-    private static int getRandomIntColor() {
-        int[] rgb = getRandomRgb();
-        int color = 0;
-        for (int c : rgb) {
-            color = color << 8;
-            color = color | c;
-        }
-        return color;
-    }
-
-    private static int[] getRandomRgb() {
-        int[] rgb = new int[3];
-        for (int i = 0; i < 3; i++) {
-            rgb[i] = random.nextInt(255);
-        }
-        return rgb;
-    }
 
     private static void shear(Graphics g, int w1, int h1, Color color) {
         shearX(g, w1, h1, color);
@@ -312,13 +311,22 @@ public class Captcha {
         String start = colorBounds.getStart();
         String end = colorBounds.getEnd();
 
-        String red = Integer.toHexString(random.nextInt(256)).toUpperCase();
-        //生成绿色颜色代码
-        String green = Integer.toHexString(random.nextInt(256)).toUpperCase();
-        //生成蓝色颜色代码
-        String blue = Integer.toHexString(random.nextInt(256)).toUpperCase();
+        if (!PATTERN_COLOR.matcher(start).matches()
+                || !PATTERN_COLOR.matcher(end).matches()) {
+            return Color.WHITE;
+        }
 
-        int r = start + random.nextInt(end - start);
+        int startRInt = Integer.parseInt(start.substring(1, 3), 16);
+        int startGInt = Integer.parseInt(start.substring(3, 5), 16);
+        int startBInt = Integer.parseInt(start.substring(5, 7), 16);
 
+        int endRInt = Integer.parseInt(end.substring(1, 3), 16);
+        int endGInt = Integer.parseInt(end.substring(3, 5), 16);
+        int endBInt = Integer.parseInt(end.substring(5, 7), 16);
+
+        int r = startRInt + random.nextInt(endRInt - startRInt);
+        int g = startGInt + random.nextInt(endGInt - startGInt);
+        int b = startBInt + random.nextInt(endBInt - startBInt);
+        return new Color(r, g, b);
     }
 }

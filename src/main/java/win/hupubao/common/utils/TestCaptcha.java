@@ -26,12 +26,12 @@ public class TestCaptcha {
 
     public static void main(String[] args) throws IOException {
         BufferedImage image = Captcha.getInstance()
-                .captchaLength(6)
+                .captchaLength(4)
                 .noiseRate(0.01f)
-                .noiseLineColorBounds(new Captcha.ColorBounds(123, 126))
+                .noiseLineColorBounds(new Captcha.ColorBounds("#666633", "#997744"))
                 .generateCaptchaImage();
 
-        File file = new File("I:/a.jpg");
+        File file = new File("I:/" + Captcha.getInstance().getCaptchaCode() + ".jpg");
         ImageIO.write(image, "jpg", file);
     }
 }
