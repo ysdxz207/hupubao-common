@@ -14,23 +14,20 @@ import java.io.IOException;
 
 public class TestCaptcha {
     public static void main(String[] args) throws IOException {
-
-        //生成BufferedImage
-        Captcha captchaBufferedImage = Captcha.create();
-        BufferedImage bufferedImage = captchaBufferedImage
-                //是否排除相似字母
-                .isExcludeSimilerCharacter(false)
-                .captchaLength(5)
+        Captcha captcha = Captcha.getInstance().isExcludeSimilerCharacter(false)
+                .captchaLength(4)
                 .width(80)
                 .height(34)
                 .noiseLineNum(10)
                 .noiseRate(0.06f)
                 .captchaCharacterColorBounds(new Captcha.ColorBounds("#994444", "#CC5555"))
-                .backgroundColorBounds(new Captcha.ColorBounds("#444444", "#999955")).generateCaptchaImage();
-        ImageIO.write(bufferedImage, "jpg", new File("D://" + captchaBufferedImage.getCaptchaCode() + ".jpg"));
-        //生成base64
-        String imageBase64 = Captcha.create()
-                .captchaLength(6).generateCaptchaImageBase64();
+                .backgroundColorBounds(new Captcha.ColorBounds("#444444", "#999955"));
+        Captcha.CaptchaImage captchaImage = captcha.generate();
+                //是否排除相似字母
+                ImageIO.write(captchaImage.getBufferedImage(), "jpg", new File("D://" + captchaImage.getCaptchaCode() + ".jpg"));
+
+        System.out.println(captchaImage.getCaptchaCode());
+        String imageBase64 = captcha.captchaLength(6).generate().getBase64Image();
         System.out.println(imageBase64);
 
     }

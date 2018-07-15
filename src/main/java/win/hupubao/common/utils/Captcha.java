@@ -18,6 +18,7 @@ package win.hupubao.common.utils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
+import win.hupubao.common.utils.rsa.RSA;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -92,11 +93,27 @@ public class Captcha {
      */
     private static boolean EXCLUDE_SIMILER_CHARACTER = true;
 
-    private String captchaCode;
+    private CaptchaImage captchaImage;
 
-    public static Captcha create() {
-        return new Captcha();
+
+    public Captcha() {
     }
+
+    public static Captcha getInstance() {
+        Captcha instance = Captcha.CaptchaInstance.INSTANCE.singleton;
+        return instance;
+    }
+
+    private enum CaptchaInstance {
+        INSTANCE;
+
+        CaptchaInstance() {
+            singleton = new Captcha();
+        }
+
+        private Captcha singleton;
+    }
+
 
     public Captcha width(int width) {
         WIDTH = width;
@@ -154,10 +171,36 @@ public class Captcha {
     }
 
 
-    public String getCaptchaCode() {
-        return captchaCode;
-    }
+    public static class CaptchaImage implements Serializable{
+        private static final long serialVersionUID = 1L;
+        private String captchaCode;
+        private String base64Image;
+        private BufferedImage bufferedImage;
 
+        public String getCaptchaCode() {
+            return captchaCode;
+        }
+
+        public void setCaptchaCode(String captchaCode) {
+            this.captchaCode = captchaCode;
+        }
+
+        public String getBase64Image() {
+            return base64Image;
+        }
+
+        public void setBase64Image(String base64Image) {
+            this.base64Image = base64Image;
+        }
+
+        public BufferedImage getBufferedImage() {
+            return bufferedImage;
+        }
+
+        public void setBufferedImage(BufferedImage bufferedImage) {
+            this.bufferedImage = bufferedImage;
+        }
+    }
     public static class ColorBounds {
         private String start = "#999999";
         private String end = "#EEEEEE";
@@ -184,16 +227,36 @@ public class Captcha {
         }
     }
 
+    public CaptchaImage generate() {
+        CaptchaImage captchaImage = new CaptchaImage();
+        String captchaCode;
+        if (EXCLUDE_SIMILER_CHARACTER) {
+            captchaCode = generateChapterCodeWithoutSimilerCharacters();
+        } else {
+            captchaCode = RandomStringUtils.randomAlphanumeric(CAPTCHA_LENGTH);
+        }
+
+        captchaImage.setCaptchaCode(captchaCode);
+        captchaImage.setBufferedImage(generateCaptchaImage(captchaCode));
+        captchaImage.setBase64Image(generateCaptchaImageBase64(captchaCode));
+
+        return captchaImage;
+    }
+
     /**
      * Generate a base64 captcha image.
      *
      * @return
      * @throws IOException
      */
-    public String generateCaptchaImageBase64() throws IOException {
-        BufferedImage bufferedImage = generateCaptchaImage();
+    private String generateCaptchaImageBase64(String captchaCode) {
+        BufferedImage bufferedImage = generateCaptchaImage(captchaCode);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpg", outputStream);
+        try {
+            ImageIO.write(bufferedImage, "jpg", outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return (NEED_PREFIX ? BASE64_IMAGE_PREFIX : "") + Base64.encodeBase64String(outputStream.toByteArray());
     }
 
@@ -204,12 +267,8 @@ public class Captcha {
      * @return
      * @throws IOException
      */
-    public BufferedImage generateCaptchaImage() {
-        if (EXCLUDE_SIMILER_CHARACTER) {
-            this.captchaCode = generateChapterCodeWithoutSimilerCharacters();
-        } else {
-            this.captchaCode = RandomStringUtils.randomAlphanumeric(CAPTCHA_LENGTH);
-        }
+    private BufferedImage generateCaptchaImage(String captchaCode) {
+
         BufferedImage image = new BufferedImage(Captcha.WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = image.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
