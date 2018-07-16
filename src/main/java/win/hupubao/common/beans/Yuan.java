@@ -412,4 +412,12 @@ public class Yuan implements Serializable {
     public BigDecimal getValue() {
         return value;
     }
+
+    /**
+     * 元转分
+     * @return
+     */
+    public int toFen() {
+        return (int) (this.doubleValue() * 100);
+    }
 }
