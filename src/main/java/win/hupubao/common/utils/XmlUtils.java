@@ -23,6 +23,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +42,7 @@ public class XmlUtils {
         private String text = "";
         private String tagName;
         private El parent;
-        private El child;
+        private List<El> children = new ArrayList<>();
 
         public El() {
         }
@@ -56,20 +58,25 @@ public class XmlUtils {
 
         private String getHtml(El el) {
             String blank = blank(el.level);
-            StringBuilder sb = new StringBuilder(blank + "<" + el.tagName + ">");
-            if (el.child != null) {
-                sb.append("\n");
+            boolean hasChildren = !el.children.isEmpty();
+            StringBuilder sb = new StringBuilder(blank + "<" + el.tagName + ">" + (hasChildren ? "\n" : ""));
+            if (hasChildren) {
+                for (El child :
+                        el.children) {
+                    sb.append(getHtml(child));
+                }
                 sb.append(blank);
-                sb.append(getHtml(el.child));
-                sb.append(blank);
-                sb.append("</" + el.tagName + ">\n");
+                sb.append("</");
+                sb.append(el.tagName);
+                sb.append(">\n");
                 return sb.toString();
             }
 
             sb.append(el.text);
             sb.append("</");
             sb.append(el.tagName);
-            sb.append(">\n");
+            sb.append("> ");
+            sb.append("\n");
             return sb.toString();
         }
 
@@ -80,14 +87,24 @@ public class XmlUtils {
             return String.format("%-" + level * 4 + "s", "");
         }
 
+        private String appendEnter(String str) {
+            if (StringUtils.isBlank(str)) {
+                return "\n";
+            }
+            if (str.endsWith("\n")) {
+                return str;
+            }
+            return str + "\n";
+        }
 
 
         public El append(String tagName) {
-            this.child = new El(tagName);
+            El child = new El(tagName);
+            child.parent = this;
+            child.level = level + 1;
+            this.children.add(child);
             this.html = getHtml(this);
-            this.child.parent = this;
-            ++ this.child.level;
-            return this.child;
+            return child;
         }
 
         public void text(String text,
@@ -199,11 +216,13 @@ public class XmlUtils {
     public static void main(String[] args) {
         JSONObject json = new JSONObject();
         JSONObject json2 = new JSONObject();
+        JSONObject json3 = new JSONObject();
 
         json2.put("b-1", "b-1content");
+        json3.put("v-1-3", json2);
 
         json.put("aa", "vv");
-        json.put("b", json2);
+        json.put("b", json3);
         String str = jsonToXml("root", json.toJSONString(), true);
 
         System.out.println(str);
