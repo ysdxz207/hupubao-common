@@ -40,15 +40,23 @@ public class Yuan implements Serializable {
     }
 
     public Yuan(BigDecimal value) {
+        this(value, true);
+    }
+
+    public Yuan(BigDecimal value, boolean halfUp) {
         if (value == null) {
             value = new BigDecimal(0);
         }
-        this.value = new BigDecimal(value.setScale(2, RoundingMode.HALF_UP)
+        this.value = new BigDecimal(value.setScale(2, halfUp ? RoundingMode.HALF_UP : RoundingMode.FLOOR)
                 .toPlainString());
     }
 
     public Yuan(String val) {
         this(new BigDecimal(val));
+    }
+
+    public Yuan(String val, boolean halfUp) {
+        this(new BigDecimal(val), halfUp);
     }
 
     public Yuan(double val) {
