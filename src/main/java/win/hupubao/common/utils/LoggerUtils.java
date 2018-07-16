@@ -32,7 +32,7 @@ public class LoggerUtils {
      * @return
      */
     private static Logger getLogger() {
-        String clazzCallerName = new Exception().getStackTrace()[1].getClassName();
+        String clazzCallerName = new Exception().getStackTrace()[2].getClassName();
         Class clazzCaller = null;
         try {
             clazzCaller = Class.forName(clazzCallerName);
