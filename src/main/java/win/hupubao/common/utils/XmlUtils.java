@@ -98,7 +98,11 @@ public class XmlUtils {
             if (value instanceof JSONObject) {
                 convertJsonToElement(element, (JSONObject) value, addXMLCDATA);
             } else if (value instanceof String) {
-                element.text("<![CDATA[" + (String) value + "]]");
+                if (addXMLCDATA) {
+                    element.text("<![CDATA[" + value + "]]");
+                } else {
+                    element.text((String) value);
+                }
             }
         }
     }
