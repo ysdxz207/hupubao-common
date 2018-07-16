@@ -30,7 +30,8 @@ import java.util.Map;
  * @date 2018-07-12
  * <p>
  * xml解析工具
- */public class XmlUtils {
+ */
+public class XmlUtils {
 
 
     /**
@@ -66,24 +67,27 @@ import java.util.Map;
 
     /**
      * Json转xml
+     *
      * @param rootTagName
-     * @param json Json对象字符串
+     * @param json        Json对象字符串
      * @return
      */
     public static String jsonToXml(String rootTagName,
-                                   String json) {
+                                   String json,
+                                   boolean addXMLCDATA) {
         if (StringUtils.isEmpty(json)) {
             return "";
         }
 
         Document document = new Document("");
         Element element = document.appendElement(rootTagName);
-        convertJsonToElement(element, JSON.parseObject(json));
+        convertJsonToElement(element, JSON.parseObject(json), addXMLCDATA);
         return document.html();
     }
 
     private static void convertJsonToElement(Element parentElement,
-                                               JSONObject json) {
+                                             JSONObject json,
+                                             boolean addXMLCDATA) {
         if (json == null) {
             return;
         }
@@ -92,15 +96,14 @@ import java.util.Map;
             Object value = entry.getValue();
             Element element = parentElement.appendElement((String) key);
             if (value instanceof JSONObject) {
-                convertJsonToElement(element, (JSONObject) value);
+                convertJsonToElement(element, (JSONObject) value, addXMLCDATA);
             } else if (value instanceof String) {
-                element.text((String) value);
+                element.text("<![CDATA[" + (String) value + "]]");
             }
         }
     }
 
     /**
-     *
      * @param element
      * @return
      */
