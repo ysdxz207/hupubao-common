@@ -379,7 +379,7 @@ public class Page {
                 return new JSONObject();
             }
             Element body = document.body();
-            return XmlUtils.xmlToJson(body.text(), extractXMLCDATA);
+            return XmlUtils.xmlToJson(body.html(), extractXMLCDATA);
         }
 
         @Override
