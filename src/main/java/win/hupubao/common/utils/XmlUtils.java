@@ -19,10 +19,10 @@ package win.hupubao.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -32,6 +32,71 @@ import java.util.Map;
  * xml解析工具
  */
 public class XmlUtils {
+
+    private static class El implements Serializable {
+        private static final long serialVersionUID = -1016024230871811400L;
+        private int level = 0;
+        private String html;
+        private String text = "";
+        private String tagName;
+        private El parent;
+        private El child;
+
+        public El() {
+        }
+
+        public El(String tagName) {
+            this.tagName = tagName;
+            this.html = getHtml(this);
+        }
+
+        public String html() {
+            return getHtml(this);
+        }
+
+        private String getHtml(El el) {
+            String blank = blank(el.level);
+            StringBuilder sb = new StringBuilder(blank + "<" + el.tagName + ">");
+            if (el.child != null) {
+                sb.append("\n");
+                sb.append(blank);
+                sb.append(getHtml(el.child));
+                sb.append(blank);
+                sb.append("</" + el.tagName + ">\n");
+                return sb.toString();
+            }
+
+            sb.append(el.text);
+            sb.append("</");
+            sb.append(el.tagName);
+            sb.append(">\n");
+            return sb.toString();
+        }
+
+        private String blank(int level) {
+            if (level <= 0) {
+                return "";
+            }
+            return String.format("%-" + level * 4 + "s", "");
+        }
+
+
+
+        public El append(String tagName) {
+            this.child = new El(tagName);
+            this.html = getHtml(this);
+            this.child.parent = this;
+            ++ this.child.level;
+            return this.child;
+        }
+
+        public void text(String text,
+                         boolean addXmlCDATA) {
+            this.text = addXmlCDATA ? "<![CDATA[" + text + "]]>" : text;
+            this.html = getHtml(this);
+            this.parent.html = getHtml(this.parent);
+        }
+    }
 
 
     /**
@@ -79,13 +144,12 @@ public class XmlUtils {
             return "";
         }
 
-        Document document = new Document("");
-        Element element = document.appendElement(rootTagName);
-        convertJsonToElement(element, JSON.parseObject(json), addXMLCDATA);
-        return document.html();
+        El root = new El(rootTagName);
+        convertJsonToElement(root, JSON.parseObject(json), addXMLCDATA);
+        return root.html();
     }
 
-    private static void convertJsonToElement(Element parentElement,
+    private static void convertJsonToElement(El parentEl,
                                              JSONObject json,
                                              boolean addXMLCDATA) {
         if (json == null) {
@@ -94,15 +158,11 @@ public class XmlUtils {
         for (Map.Entry entry : json.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
-            Element element = parentElement.appendElement((String) key);
+            El el = parentEl.append((String) key);
             if (value instanceof JSONObject) {
-                convertJsonToElement(element, (JSONObject) value, addXMLCDATA);
+                convertJsonToElement(el, (JSONObject) value, addXMLCDATA);
             } else if (value instanceof String) {
-                if (addXMLCDATA) {
-                    element.text("<![CDATA[" + value + "]]");
-                } else {
-                    element.text((String) value);
-                }
+                el.text((String) value, addXMLCDATA);
             }
         }
     }
@@ -134,6 +194,19 @@ public class XmlUtils {
         UnsupportedJsonFormatException(String message) {
             super(message);
         }
+    }
+
+    public static void main(String[] args) {
+        JSONObject json = new JSONObject();
+        JSONObject json2 = new JSONObject();
+
+        json2.put("b-1", "b-1content");
+
+        json.put("aa", "vv");
+        json.put("b", json2);
+        String str = jsonToXml("root", json.toJSONString(), true);
+
+        System.out.println(str);
     }
 
 }
