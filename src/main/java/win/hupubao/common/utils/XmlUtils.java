@@ -178,7 +178,7 @@ public class XmlUtils {
             El el = parentEl.append((String) key);
             if (value instanceof JSONObject) {
                 convertJsonToElement(el, (JSONObject) value, addXMLCDATA);
-            } else if (value instanceof String) {
+            } else {
                 el.text((String) value, addXMLCDATA);
             }
         }
