@@ -124,6 +124,10 @@ public class ResponseBase implements Serializable {
 		return this;
 	}
 
+	public ResponseBase success() {
+		return success(null);
+	}
+
 	/**
 	 * 序列化
 	 *
