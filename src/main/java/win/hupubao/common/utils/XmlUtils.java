@@ -213,19 +213,4 @@ public class XmlUtils {
         }
     }
 
-    public static void main(String[] args) {
-        JSONObject json = new JSONObject();
-        JSONObject json2 = new JSONObject();
-        JSONObject json3 = new JSONObject();
-
-        json2.put("b-1", "b-1content");
-        json3.put("v-1-3", json2);
-
-        json.put("aa", "vv");
-        json.put("b", json3);
-        String str = jsonToXml("root", json.toJSONString(), true);
-
-        System.out.println(str);
-    }
-
 }
