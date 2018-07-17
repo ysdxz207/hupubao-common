@@ -179,7 +179,7 @@ public class XmlUtils {
             if (value instanceof JSONObject) {
                 convertJsonToElement(el, (JSONObject) value, addXMLCDATA);
             } else {
-                el.text((String) value, addXMLCDATA);
+                el.text(value == null ? "" : value.toString(), addXMLCDATA);
             }
         }
     }
