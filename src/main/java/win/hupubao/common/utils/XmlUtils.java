@@ -135,7 +135,7 @@ public class XmlUtils {
 
         if (result == null) {
             Element element = Jsoup.parse(xml).body();
-            Object o = convertToJson(element, extractXMLCDATA);
+            Object o = elementToJson(element, extractXMLCDATA);
             if (o instanceof JSONObject) {
                 result = (JSONObject) o;
             }
@@ -188,7 +188,7 @@ public class XmlUtils {
      * @param element
      * @return
      */
-    private static Object convertToJson(Element element,
+    private static Object elementToJson(Element element,
                                         boolean extractXMLCDATA) {
         JSONObject json = new JSONObject();
         Elements children = element.children();
@@ -198,7 +198,7 @@ public class XmlUtils {
             return extractXMLCDATA ? element.text() : element.html();
         } else {
             for (Element e : element.children()) {
-                json.put(e.tagName(), convertToJson(e, extractXMLCDATA));
+                json.put(e.tagName(), elementToJson(e, extractXMLCDATA));
             }
             return json;
         }
