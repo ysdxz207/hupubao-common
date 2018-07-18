@@ -33,7 +33,14 @@ import java.util.List;
 @Aspect
 public class ExceptionHandler {
     private ExceptionEmailSender exceptionEmailSender;
-    private List<String> exceptionClassList;
+    private List<String> exceptionClassList = new ArrayList<>();
+
+    /**
+     * 需要有构造方法
+     * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method <init>()V not found
+     */
+    public ExceptionHandler() {
+    }
 
     public ExceptionHandler(ExceptionEmailSender exceptionEmailSender,
                             List<String> exceptionClassList) {

@@ -44,7 +44,10 @@ import java.util.Enumeration;
  */
 @Aspect
 public class LogReqResArgsHandler {
-
+    /**
+     * 需要有构造方法
+     * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method <init>()V not found
+     */
     public LogReqResArgsHandler() {
     }
 
