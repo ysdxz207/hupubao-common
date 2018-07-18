@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package win.hupubao.common.error;
+package win.hupubao.common.exception;
 
-import win.hupubao.common.beans.ResponseBase;
-import win.hupubao.common.exception.ThrowsBisinessException;
+public class ThrowsBisinessException extends RuntimeException {
 
-/**
- * 错误异常抛出
- *
- * @author W.feihong
- * @date 2017-03-07
- */
-public class Throws {
 
-    public static void throwError(String errorCode, String message) {
-        throw new ThrowsBisinessException(errorCode, new ThrowsBisinessException(message));
+    public ThrowsBisinessException() {
     }
 
-    public static void throwError(String message) {
-        throwError(ResponseBase.ERROR_CODE_FAIL, message);
+    public ThrowsBisinessException(String message) {
+        super(message);
     }
 
-    public static void throwError(Error error) {
-        throwError(error.getErrorCode(), error.getErrorMsg());
+    public ThrowsBisinessException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ThrowsBisinessException(Throwable cause) {
+        super(cause);
+    }
+
+    public ThrowsBisinessException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }
