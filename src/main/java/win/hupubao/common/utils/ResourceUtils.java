@@ -26,7 +26,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2017-08-04
  */
 public class ResourceUtils {

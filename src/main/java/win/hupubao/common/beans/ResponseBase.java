@@ -27,7 +27,7 @@ import win.hupubao.common.error.Error;
 import java.io.Serializable;
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2016年12月6日 下午9:24:25
  */
 public class ResponseBase implements Serializable {

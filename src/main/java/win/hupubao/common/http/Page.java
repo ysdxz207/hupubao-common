@@ -59,7 +59,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author L.feihong.wei
+ * @author W.feihong.wei
  * @date 2018-06-13 17:44:35
  * <p>
  * 通用HTTP请求工具

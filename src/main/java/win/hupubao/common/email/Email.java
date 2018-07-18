@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2018-07-10
  */
 public class Email implements Serializable {

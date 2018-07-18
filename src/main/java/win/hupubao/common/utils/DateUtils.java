@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2018-07-09
  */
 public class DateUtils {

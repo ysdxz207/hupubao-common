@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 
 /**
  *
- * @author L.feihong
+ * @author W.feihong
  * @date 2018-06-08 17:48:33
  * 是否记录请求及返回参数日志功能注解
  * 有此注解则记录日志

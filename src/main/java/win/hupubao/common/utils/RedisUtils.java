@@ -27,7 +27,7 @@ import redis.clients.jedis.exceptions.JedisDataException;
 import java.util.*;
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2017-08-03
  */
 public class RedisUtils {

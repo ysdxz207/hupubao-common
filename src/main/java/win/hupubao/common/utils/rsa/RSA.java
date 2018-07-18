@@ -36,7 +36,7 @@ import java.util.Map;
 
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2017年1月13日
  * RSA密钥生成工具
  * 因本工具类使用随机数，在tomcat下使用时可能需加上启动参数：

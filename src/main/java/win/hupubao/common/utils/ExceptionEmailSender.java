@@ -8,7 +8,7 @@ import win.hupubao.common.email.Email;
 import java.util.Set;
 
 /**
- * @author L.feihong
+ * @author W.feihong
  * @date 2018-07-10
  */
 public class ExceptionEmailSender {

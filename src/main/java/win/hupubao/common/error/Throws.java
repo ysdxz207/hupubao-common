@@ -21,7 +21,7 @@ import win.hupubao.common.beans.ResponseBase;
 /**
  * 错误异常抛出
  *
- * @author L.feihong
+ * @author W.feihong
  * @date 2017-03-07
  */
 public class Throws {
