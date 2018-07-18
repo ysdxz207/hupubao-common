@@ -101,9 +101,9 @@ public class ResponseBase implements Serializable {
 
 		if (cause != null) {
 			this.message = cause.getMessage();
+			this.errorCode = e.getMessage();
 		}
 
-		this.errorCode = e.getMessage();
 		this.statusCode = STATUS_CODE_FAIL;
 		return this;
 	}
