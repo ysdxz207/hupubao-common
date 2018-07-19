@@ -56,7 +56,7 @@ public class ExceptionHandler {
      * @param throwable
      */
     @AfterThrowing(pointcut = "execution(* *(..)) && !execution(* win.hupubao.common..*(..))", throwing = "throwable")
-    public void AfterThrowing(JoinPoint joinPoint,
+    public void afterThrowing(JoinPoint joinPoint,
                               Throwable throwable) {
         String exceptionClassName = throwable.getClass().getName();
         if (exceptionClassList.contains(exceptionClassName)) {

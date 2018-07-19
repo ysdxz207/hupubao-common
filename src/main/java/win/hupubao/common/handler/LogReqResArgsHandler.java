@@ -81,7 +81,7 @@ public class LogReqResArgsHandler {
      * @param logReqResArgs
      */
     @AfterReturning(pointcut = "execution(* *(..)) && @annotation(logReqResArgs)", returning = "returnValue")
-    public void AfterReturning(JoinPoint joinPoint,
+    public void afterReturning(JoinPoint joinPoint,
                                LogReqResArgs logReqResArgs,
                                Object returnValue) {
         doLog(joinPoint, logReqResArgs, returnValue);
@@ -94,7 +94,7 @@ public class LogReqResArgsHandler {
      * @param throwable
      */
     @AfterThrowing(pointcut = "execution(* *(..)) && @annotation(logReqResArgs)", throwing = "throwable")
-    public void AfterThrowing(JoinPoint joinPoint,
+    public void afterThrowing(JoinPoint joinPoint,
                               LogReqResArgs logReqResArgs,
                               Throwable throwable) {
         if (logReqResArgs.logException()) {
