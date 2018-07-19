@@ -59,6 +59,11 @@ public class LoggerUtils {
         getLogger().warn(message);
     }
 
+    /**
+     *
+     * @param format 占位符为{}，如：LoggerUtils.warn("参数是{}", "name")
+     * @param args 占位符对应的参数
+     */
     public static void warn(String format,
                              Object... args) {
         getLogger().warn(format, args);
@@ -88,6 +93,11 @@ public class LoggerUtils {
         getLogger().debug(message);
     }
 
+    /**
+     *
+     * @param format 占位符为{}，如：LoggerUtils.debug("参数是{}", "name")
+     * @param args 占位符对应的参数
+     */
     public static void debug(String format,
                              Object... args) {
         getLogger().debug(format, args);
@@ -118,6 +128,11 @@ public class LoggerUtils {
         getLogger().info(message);
     }
 
+    /**
+     *
+     * @param format 占位符为{}，如：LoggerUtils.info("参数是{}", "name")
+     * @param args 占位符对应的参数
+     */
     public static void info(String format,
                             Object... args) {
         getLogger().info(format, args);
@@ -147,6 +162,11 @@ public class LoggerUtils {
         getLogger().error(message);
     }
 
+    /**
+     *
+     * @param format 占位符为{}，如：LoggerUtils.error("参数是{}", "name")
+     * @param args 占位符对应的参数
+     */
     public static void error(String format,
                             Object... args) {
         getLogger().error(format, args);
