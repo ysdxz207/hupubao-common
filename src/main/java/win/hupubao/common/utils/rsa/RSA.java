@@ -17,6 +17,7 @@
 package win.hupubao.common.utils.rsa;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import win.hupubao.common.utils.StringUtils;
@@ -275,33 +276,25 @@ public class RSA {
     /**
      * @param sPara     签名参数
      * @param sign      签名字符串
-     * @param publicKey 公钥
      * @return
      */
     public boolean verify(Map<String, String> sPara,
                           String sign,
-                          String publicKey,
                           SignType signType) {
 
-        publicKey = StringUtils.replaceBlank(publicKey);
+        if (publicKey == null) {
+            throw new NoPublicKeyException("Public key is null.Please call `rsaKey(RSAKey rsaKey)` method first.");
+        }
         String prestr = createLinkString(sPara);
         String md = DigestUtils.md5Hex(getContentBytes(prestr));
-        return verify(md, sign, publicKey, signType);
-    }
 
-    private boolean verify(String content,
-                           String sign,
-                           String publicKey,
-                           SignType signType) {
+
         try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            byte[] encodedKey = decoder.decodeBuffer(publicKey);
-            PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
 
             java.security.Signature signature = java.security.Signature.getInstance(signType.algorithm);
 
-            signature.initVerify(pubKey);
-            signature.update(content.getBytes(CHARSET));
+            signature.initVerify(publicKey);
+            signature.update(md.getBytes(CHARSET));
 
             return signature.verify(decoder.decodeBuffer(sign));
 
@@ -311,6 +304,7 @@ public class RSA {
 
         return false;
     }
+
 
     //////////////////加密解密
 
@@ -422,4 +416,14 @@ public class RSA {
         }
     }
 
+    class NoPublicKeyException extends RuntimeException {
+        private static final long serialVersionUID = 4511932659620947111L;
+
+        public NoPublicKeyException() {
+        }
+
+        public NoPublicKeyException(String message) {
+            super(message);
+        }
+    }
 }
