@@ -12,8 +12,7 @@
 
 ```java
 
-
-package win.hupubao.common.utils.rsa;
+import win.hupubao.common.utils.rsa.RSA;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +31,8 @@ public class TestRsa {
         String sign = RSA.getInstance().sign(rsaKey.getPrivateKey(),
                 map, signType);
 
-        boolean success = RSA.getInstance().verify(map, sign, rsaKey.getPublicKey(),
-                signType);
+        boolean success = RSA.getInstance().rsaKey(rsaKey)
+                .verify(map, sign, signType);
 
         System.out.println(rsaKey.getPrivateKey());
         System.out.println(rsaKey.getPublicKey());
@@ -61,5 +60,4 @@ public class TestRsa {
         System.out.println(decrypted2);
     }
 }
-
 ```
