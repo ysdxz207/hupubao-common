@@ -68,10 +68,6 @@ public class StringUtils {
     public static String firstToLowerCase(String name) {
         return StringUtils.isBlank(name) ? "" : name.substring(0, 1).toLowerCase() + name.substring(1);
     }
-    public static void main(String[] args) {
-        String str = "int(12)";
-        System.out.println(parseInteger(str));
-    }
 
     public static String join(Object[] strAry, String join){
         StringBuffer sb=new StringBuffer();
