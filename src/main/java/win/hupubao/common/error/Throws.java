@@ -35,7 +35,7 @@ public class Throws {
         throwError(ResponseBase.ERROR_CODE_FAIL, message);
     }
 
-    public static void throwError(Error error) {
+    public static void throwError(ErrorInfo error) {
         throwError(error.getErrorCode(), error.getErrorMsg());
     }
 }

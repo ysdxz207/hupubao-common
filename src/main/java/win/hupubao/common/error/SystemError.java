@@ -16,7 +16,7 @@
 
 package win.hupubao.common.error;
 
-public enum SystemError implements Error {
+public enum SystemError implements ErrorInfo {
     SIGN_ERROR("SIGN_ERROR", "Sign error."),
     PARAMETER_ERROR("PARAMETER_ERROR", "Parameter error."),
     SYSTEM_ERROR("SYSTEM_ERROR", "System internal error."),

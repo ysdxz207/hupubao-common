@@ -22,7 +22,7 @@ package win.hupubao.common.beans;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import win.hupubao.common.error.Error;
+import win.hupubao.common.error.ErrorInfo;
 import win.hupubao.common.exception.ThrowsBisinessException;
 
 import java.io.Serializable;
@@ -111,7 +111,7 @@ public class ResponseBase<T> implements Serializable {
 	}
 
 
-	@SuppressWarnings("unchecked")public T error(Error error) {
+	@SuppressWarnings("unchecked")public T error(ErrorInfo error) {
 		this.errorCode = error.getErrorCode();
 		this.message = error.getErrorMsg();
 		this.statusCode = STATUS_CODE_FAIL;

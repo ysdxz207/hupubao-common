@@ -16,7 +16,7 @@
 
 package win.hupubao.common.error;
 
-public interface Error {
+public interface ErrorInfo {
     String getErrorCode();
 
     String getErrorMsg();
