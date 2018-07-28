@@ -18,6 +18,7 @@ package win.hupubao.common.error;
 
 import win.hupubao.common.beans.ResponseBase;
 import win.hupubao.common.exception.ThrowsBisinessException;
+import win.hupubao.common.utils.StringUtils;
 
 /**
  * 错误异常抛出
@@ -37,5 +38,9 @@ public class Throws {
 
     public static void throwError(ErrorInfo error) {
         throwError(error.getErrorCode(), error.getErrorMsg());
+    }
+
+    public static void throwError(ErrorInfo error, String message) {
+        throwError(error.getErrorCode(), StringUtils.isNotBlank(message) ? message : error.getErrorMsg());
     }
 }
