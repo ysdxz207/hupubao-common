@@ -23,7 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import win.hupubao.common.error.ErrorInfo;
-import win.hupubao.common.exception.ThrowsBisinessException;
+import win.hupubao.common.exception.BusinessException;
 
 import java.io.Serializable;
 
@@ -101,7 +101,7 @@ public class ResponseBase<T> implements Serializable {
 		Throwable cause = e.getCause();
 
 		if (cause != null
-				&& e instanceof ThrowsBisinessException) {
+				&& e instanceof BusinessException) {
 			this.message = cause.getMessage();
 			this.errorCode = e.getMessage();
 		}

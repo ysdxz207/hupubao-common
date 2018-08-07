@@ -21,7 +21,7 @@ public enum SystemError implements ErrorInfo {
     PARAMETER_ERROR("PARAMETER_ERROR", "Parameter error."),
     SYSTEM_ERROR("SYSTEM_ERROR", "System internal error."),
     SYSTEM_BISINESS_ERROR("SYSTEM_BUSINESS_ERROR", "System business error."),
-    OPERATION_FREQUENTLY_ERROR("OPERATION_FREQUENTLY_ERROR", "The system is busy now,please try it later.");
+    REQUEST_FREQUENTLY_ERROR("REQUEST_FREQUENTLY_ERROR", "The server is busy now,please try it later.");
 
     SystemError(String error_code, String error_msg) {
         this.error_code = error_code;

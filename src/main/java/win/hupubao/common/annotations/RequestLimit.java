@@ -16,6 +16,8 @@
 
 package win.hupubao.common.annotations;
 
+import win.hupubao.common.handler.adaper.RequestLimitAdapter;
+
 import java.lang.annotation.*;
 
 /**
@@ -30,8 +32,20 @@ import java.lang.annotation.*;
 @Documented
 public @interface RequestLimit {
     /**
-     * 请求间隔,0不限制
+     * 请求间隔,-1或0不限制
      * @return
      */
-    public long interval() default 0;
+    public long interval() default -1;
+
+    /**
+     * 请求控制处理器
+     * @return
+     */
+    public Class<? extends RequestLimitAdapter> adapter() default RequestLimitAdapter.class;
+
+    /**
+     * 每次请求后是否重新限制
+     * @return
+     */
+    public boolean updated() default false;
 }

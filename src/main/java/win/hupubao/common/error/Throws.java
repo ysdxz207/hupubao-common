@@ -17,7 +17,7 @@
 package win.hupubao.common.error;
 
 import win.hupubao.common.beans.ResponseBase;
-import win.hupubao.common.exception.ThrowsBisinessException;
+import win.hupubao.common.exception.BusinessException;
 import win.hupubao.common.utils.StringUtils;
 
 /**
@@ -29,7 +29,7 @@ import win.hupubao.common.utils.StringUtils;
 public class Throws {
 
     public static void throwError(String errorCode, String message) {
-        throw new ThrowsBisinessException(errorCode, new ThrowsBisinessException(message));
+        throw new BusinessException(errorCode, new BusinessException(message));
     }
 
     public static void throwError(String message) {

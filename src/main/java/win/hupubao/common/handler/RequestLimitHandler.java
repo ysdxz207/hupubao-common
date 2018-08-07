@@ -16,37 +16,84 @@
 
 package win.hupubao.common.handler;
 
-import org.aspectj.lang.JoinPoint;
+import net.jodah.expiringmap.ExpirationPolicy;
+import net.jodah.expiringmap.ExpiringMap;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import win.hupubao.common.annotations.RequestLimit;
+import win.hupubao.common.handler.adaper.RequestLimitAdapter;
+import win.hupubao.common.utils.IPUtils;
+import win.hupubao.common.utils.LoggerUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author W.feihong
  * @date 2018-08-06
  * 访问频率检查
  */
 @Aspect
 public class RequestLimitHandler {
+    private static final ExpiringMap<String, Long> REQUEST_MAP = ExpiringMap.builder()
+            .variableExpiration()
+            .expirationPolicy(ExpirationPolicy.ACCESSED)
+            .build();
 
     /**
      * 需要有构造方法
-     * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method <init>()V not found
+     * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method &lt;init&gt;()V not found
      */
     public RequestLimitHandler() {
     }
 
-    @Before("execution(* *(..)) && @annotation(requestLimit)")
-    public void before(JoinPoint joinPoint,
-                         RequestLimit requestLimit) {
-        long interval = requestLimit.interval();
-        if (interval > 0) {
-            
+    @Around("execution(* *(..)) && @annotation(requestLimit)")
+    public Object around(ProceedingJoinPoint proceedingJoinPoint,
+                         RequestLimit requestLimit) throws Throwable {
+        long limitInterval = requestLimit.interval();
+        if (limitInterval > 0) {
+            Object[] args = proceedingJoinPoint.getArgs();
+
+            HttpServletRequest request = null;
+            for (Object obj : args) {
+                if (obj instanceof HttpServletRequest) {
+                    request = (HttpServletRequest) obj;
+                }
+            }
+            if (request == null) {
+                LoggerUtils.warn(getClass(), "Method with annotation [RequestLimit] should have HttpServletRequest type parameter.");
+                return proceedingJoinPoint.proceed();
+            }
+
+            String ip = IPUtils.getRemoteIp(request);
+            long currentTime = System.currentTimeMillis();
+            boolean limit = REQUEST_MAP.containsKey(ip);
+            long lastRequestTime = limit ? REQUEST_MAP.get(ip) : 0;
+            long currentInterval = currentTime - lastRequestTime;
+
+
+            if (limit) {
+                long limitTimeLast = limitInterval - currentInterval;
+                if (requestLimit.updated()) {
+                    REQUEST_MAP.put(ip, currentTime, limitInterval, TimeUnit.MILLISECONDS);
+                    limitTimeLast = limitInterval;
+                }
+
+                Class<? extends RequestLimitAdapter> clazz = requestLimit.adapter();
+                try {
+
+                    RequestLimitAdapter requestLimitAdapter = clazz.newInstance();
+                    return requestLimitAdapter.handle(limitInterval, requestLimit.updated(), limitTimeLast, args);
+                } catch (InstantiationException e) {
+                    LoggerUtils.warn("Can not execute request limit handler [{}].", clazz.getName());
+                }
+
+            }
+            REQUEST_MAP.put(ip, currentTime, limitInterval, TimeUnit.MILLISECONDS);
 
         }
+        return proceedingJoinPoint.proceed();
     }
 
 }

@@ -16,25 +16,25 @@
 
 package win.hupubao.common.exception;
 
-public class ThrowsBisinessException extends RuntimeException {
+public class BusinessException extends RuntimeException {
 
 
-    public ThrowsBisinessException() {
+    public BusinessException() {
     }
 
-    public ThrowsBisinessException(String message) {
+    public BusinessException(String message) {
         super(message);
     }
 
-    public ThrowsBisinessException(String message, Throwable cause) {
+    public BusinessException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ThrowsBisinessException(Throwable cause) {
+    public BusinessException(Throwable cause) {
         super(cause);
     }
 
-    public ThrowsBisinessException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public BusinessException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
