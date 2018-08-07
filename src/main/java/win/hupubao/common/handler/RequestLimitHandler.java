@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class RequestLimitHandler {
     private static final ExpiringMap<String, Long> REQUEST_MAP = ExpiringMap.builder()
             .variableExpiration()
-            .expirationPolicy(ExpirationPolicy.ACCESSED)
+            .expirationPolicy(ExpirationPolicy.CREATED)
             .build();
 
     /**
