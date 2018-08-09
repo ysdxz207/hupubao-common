@@ -47,8 +47,6 @@ updated为true则每次请求都会重新算请求时间，默认false
 
 ```java
 
-import win.hupubao.common.beans.Yuan;
-
 public class TestRequestLimitController {
     
     @RequestLimit(interval = 5 * 1000, adapter = MyRequestLimitAdapter.class, updated = true)
