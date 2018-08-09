@@ -92,16 +92,10 @@ public class MyRequestLimitAdapter extends RequestLimitAdapter {
 
             response.setContentType("text/json;charset=UTF-8");
             PrintWriter out = null;
-            try {
-                out = response.getWriter();
+            try (PrintWriter out = response.getWriter()){
                 out.print(JSON.toJSONString(responseBean.errorMessage(msg)));
             } catch (IOException e) {
                 LoggerUtils.error("[MyRequestLimitAdapter]异常:", e);
-            } finally {
-                if (out != null) {
-                    out.flush();
-                    out.close();
-                }
             }
             return null;
         } else {
