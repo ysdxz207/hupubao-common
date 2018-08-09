@@ -9,7 +9,7 @@
 <dependency>
     <groupId>win.hupubao</groupId>
     <artifactId>hupubao-common</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 </dependency>
 ```
 
@@ -31,7 +31,7 @@
 - [捕获异常并发送邮件工具](doc/ExceptionEmailSender.md)
 - [传统验证码生成工具](doc/Captcha.md)(v1.1.1)
 - [RSA工具](doc/RSA.md)(v1.1.1)
-- [访问请求限制工具](doc/RequestLimit.md)(1.1.3)
+- [访问请求限制工具](doc/RequestLimit.md)(1.1.5)
 
 
 
