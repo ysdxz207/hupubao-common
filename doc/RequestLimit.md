@@ -7,9 +7,41 @@
 
 - 使用方法
 
-1、方法需要有HttpServletRequest类型参数
-2、添加注解@RequestLimit
-3、配置参数：interval是访问间隔，单位毫秒，
+1.需要加入maven插件：aspectj-maven-plugin
+
+```xml
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>aspectj-maven-plugin</artifactId>
+    <version>1.10</version>
+    <configuration>
+        <encoding>UTF-8</encoding>
+        <complianceLevel>1.8</complianceLevel>
+        <aspectLibraries>
+            <aspectLibrary>
+                <groupId>win.hupubao</groupId>
+                <artifactId>hupubao-common</artifactId>
+            </aspectLibrary>
+        </aspectLibraries>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>compile</goal>
+            </goals>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+```
+
+2、方法需要有HttpServletRequest类型参数
+3、添加注解@RequestLimit
+4、配置参数：interval是访问间隔，单位毫秒，
 adapter是继承了RequestLimitAdapter的处理拦截请求的方法的类，
 updated为true则每次请求都会重新算请求时间，默认false
 

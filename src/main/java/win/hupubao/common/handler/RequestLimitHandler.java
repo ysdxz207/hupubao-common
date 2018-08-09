@@ -25,6 +25,7 @@ import win.hupubao.common.annotations.RequestLimit;
 import win.hupubao.common.handler.adaper.RequestLimitAdapter;
 import win.hupubao.common.utils.IPUtils;
 import win.hupubao.common.utils.LoggerUtils;
+import win.hupubao.common.utils.MacUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
@@ -67,16 +68,22 @@ public class RequestLimitHandler {
             }
 
             String ip = IPUtils.getRemoteIp(request);
+            String key = ip;
+
+            if (IPUtils.isLocalAddress(ip)) {
+                key = MacUtils.getLocalMac();
+            }
+
             long currentTime = System.currentTimeMillis();
-            boolean limit = REQUEST_MAP.containsKey(ip);
-            long lastRequestTime = limit ? REQUEST_MAP.get(ip) : 0;
+            boolean limit = REQUEST_MAP.containsKey(key);
+            long lastRequestTime = limit ? REQUEST_MAP.get(key) : 0;
             long currentInterval = currentTime - lastRequestTime;
 
 
             if (limit) {
                 long limitTimeLast = limitInterval - currentInterval;
                 if (requestLimit.updated()) {
-                    REQUEST_MAP.put(ip, currentTime, limitInterval, TimeUnit.MILLISECONDS);
+                    REQUEST_MAP.put(key, currentTime, limitInterval, TimeUnit.MILLISECONDS);
                     limitTimeLast = limitInterval;
                 }
 
@@ -90,7 +97,7 @@ public class RequestLimitHandler {
                 }
 
             }
-            REQUEST_MAP.put(ip, currentTime, limitInterval, TimeUnit.MILLISECONDS);
+            REQUEST_MAP.put(key, currentTime, limitInterval, TimeUnit.MILLISECONDS);
 
         }
         return proceedingJoinPoint.proceed();

@@ -1,8 +1,19 @@
 package win.hupubao.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IPUtils {
+
+
+    private static final List<String> LOCAL_ADDRESS_LIST = new ArrayList<String>() {
+        {
+            add("127.0.0.1");
+            add("0:0:0:0:0:0:0:1");
+        }
+    };
+
     /**
      * <p>
      * Web 服务器反向代理中用于存放客户端原始 IP 地址的 Http header 名字，
@@ -42,5 +53,9 @@ public class IPUtils {
             return xforwardIp;
         }
         return xforwardIp.substring( 0 , commaOffset );
+    }
+
+    public static boolean isLocalAddress(String ip) {
+        return LOCAL_ADDRESS_LIST.contains(ip);
     }
 }
