@@ -67,12 +67,7 @@ public class RequestLimitHandler {
                 return proceedingJoinPoint.proceed();
             }
 
-            String ip = IPUtils.getRemoteIp(request);
-            String key = ip;
-
-            if (IPUtils.isLocalAddress(ip)) {
-                key = MacUtils.getLocalMac();
-            }
+            String key = request.getSession().getId();
 
             long currentTime = System.currentTimeMillis();
             boolean limit = REQUEST_MAP.containsKey(key);
