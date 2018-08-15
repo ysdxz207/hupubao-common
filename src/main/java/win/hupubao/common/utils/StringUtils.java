@@ -16,6 +16,12 @@
 
 package win.hupubao.common.utils;
 
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,5 +129,23 @@ public class StringUtils {
         return dest;
     }
 
-
+    public static JSONObject parseUrlParameters(String urlParams, String charset) {
+        JSONObject jsonObject = new JSONObject();
+        if (isBlank(urlParams)) {
+            return jsonObject;
+        }
+        String[] params = urlParams.split("&");
+        for (String param : params) {
+            String[] p = param.split("=");
+            if (p.length == 2) {
+                String value = p[1];
+                try {
+                    value = URLDecoder.decode(p[1], charset);
+                } catch (UnsupportedEncodingException ignored) {
+                }
+                jsonObject.put(p[0], value);
+            }
+        }
+        return jsonObject;
+    }
 }
