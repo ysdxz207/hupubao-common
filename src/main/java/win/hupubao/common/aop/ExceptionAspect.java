@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package win.hupubao.common.handler;
+package win.hupubao.common.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -31,7 +31,7 @@ import java.util.List;
  * 异常拦截并发送邮件
  */
 @Aspect
-public class ExceptionHandler {
+public class ExceptionAspect {
     private ExceptionEmailSender exceptionEmailSender;
     private List<String> exceptionClassList = new ArrayList<>();
 
@@ -39,11 +39,11 @@ public class ExceptionHandler {
      * 需要有构造方法
      * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method <init>()V not found
      */
-    public ExceptionHandler() {
+    public ExceptionAspect() {
     }
 
-    public ExceptionHandler(ExceptionEmailSender exceptionEmailSender,
-                            List<String> exceptionClassList) {
+    public ExceptionAspect(ExceptionEmailSender exceptionEmailSender,
+                           List<String> exceptionClassList) {
         this.exceptionEmailSender = exceptionEmailSender;
         this.exceptionClassList = exceptionClassList;
     }

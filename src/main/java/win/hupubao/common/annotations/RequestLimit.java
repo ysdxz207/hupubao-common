@@ -16,7 +16,8 @@
 
 package win.hupubao.common.annotations;
 
-import win.hupubao.common.handler.adaper.RequestLimitAdapter;
+import win.hupubao.common.aop.adaper.RequestLimitAdapter;
+import win.hupubao.common.aop.adaper.RequestLimitHandler;
 
 import java.lang.annotation.*;
 
@@ -39,6 +40,12 @@ public @interface RequestLimit {
 
     /**
      * 请求控制处理器
+     * @return
+     */
+    public Class<? extends RequestLimitHandler> handler() default RequestLimitHandler.class;
+
+    /**
+     * 请求控制适配器，用户获取用户唯一标识
      * @return
      */
     public Class<? extends RequestLimitAdapter> adapter() default RequestLimitAdapter.class;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package win.hupubao.common.handler;
+package win.hupubao.common.aop;
 
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
@@ -22,10 +22,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import win.hupubao.common.annotations.RequestLimit;
-import win.hupubao.common.handler.adaper.RequestLimitAdapter;
-import win.hupubao.common.utils.IPUtils;
+import win.hupubao.common.aop.adaper.RequestLimitAdapter;
+import win.hupubao.common.aop.adaper.RequestLimitHandler;
 import win.hupubao.common.utils.LoggerUtils;
-import win.hupubao.common.utils.MacUtils;
+import win.hupubao.common.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * 访问频率检查
  */
 @Aspect
-public class RequestLimitHandler {
+public class RequestLimitAspect {
     private static final ExpiringMap<String, Long> REQUEST_MAP = ExpiringMap.builder()
             .variableExpiration()
             .expirationPolicy(ExpirationPolicy.CREATED)
@@ -46,7 +46,7 @@ public class RequestLimitHandler {
      * 需要有构造方法
      * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method &lt;init&gt;()V not found
      */
-    public RequestLimitHandler() {
+    public RequestLimitAspect() {
     }
 
     @Around("execution(* *(..)) && @annotation(requestLimit)")
@@ -66,8 +66,18 @@ public class RequestLimitHandler {
                 LoggerUtils.warn(getClass(), "Method with annotation [RequestLimit] should have HttpServletRequest type parameter.");
                 return proceedingJoinPoint.proceed();
             }
+            String key = null;
+            Class<? extends RequestLimitAdapter> clazzAdapter = requestLimit.adapter();
+            try {
+                key = clazzAdapter.newInstance().getUniqueKey(request);
+            } catch (InstantiationException e) {
+                LoggerUtils.warn("Can not execute request limit adpter [{}].", clazzAdapter.getName());
+            }
 
-            String key = request.getSession().getId();
+            if (StringUtils.isBlank(key)) {
+                LoggerUtils.warn("Can not get request limit key by [{}], default to session id.", clazzAdapter.getName());
+                key = request.getSession().getId();
+            }
 
             long currentTime = System.currentTimeMillis();
             boolean limit = REQUEST_MAP.containsKey(key);
@@ -82,10 +92,10 @@ public class RequestLimitHandler {
                     limitTimeLast = limitInterval;
                 }
 
-                Class<? extends RequestLimitAdapter> clazz = requestLimit.adapter();
+                Class<? extends RequestLimitHandler> clazz = requestLimit.handler();
                 try {
 
-                    RequestLimitAdapter requestLimitAdapter = clazz.newInstance();
+                    RequestLimitHandler requestLimitAdapter = clazz.newInstance();
                     return requestLimitAdapter.handle(limitInterval, requestLimit.updated(), limitTimeLast, args);
                 } catch (InstantiationException e) {
                     LoggerUtils.warn("Can not execute request limit handler [{}].", clazz.getName());

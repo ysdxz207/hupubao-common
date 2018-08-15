@@ -15,12 +15,12 @@
  */
 
 
-package win.hupubao.common.handler.adaper;
+package win.hupubao.common.aop.adaper;
 
 import win.hupubao.common.error.SystemError;
 import win.hupubao.common.error.Throws;
 
-public class RequestLimitAdapter {
+public class RequestLimitHandler {
     public Object handle(long interval,
                          boolean updated,
                          long limitTimeLast,

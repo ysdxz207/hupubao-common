@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package win.hupubao.common.handler;
+package win.hupubao.common.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -30,7 +30,6 @@ import win.hupubao.common.utils.LoggerUtils;
 import win.hupubao.common.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
@@ -43,12 +42,12 @@ import java.util.Enumeration;
  *
  */
 @Aspect
-public class LogReqResArgsHandler {
+public class LogReqResArgsAspect {
     /**
      * 需要有构造方法
      * 否则会报Caused by: java.lang.NoSuchMethodError xxx  method <init>()V not found
      */
-    public LogReqResArgsHandler() {
+    public LogReqResArgsAspect() {
     }
 
 
