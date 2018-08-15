@@ -129,6 +129,12 @@ public class StringUtils {
         return dest;
     }
 
+    /**
+     * 将url参数解析为json
+     * @param urlParams
+     * @param charset
+     * @return
+     */
     public static JSONObject parseUrlParameters(String urlParams, String charset) {
         JSONObject jsonObject = new JSONObject();
         if (isBlank(urlParams)) {
