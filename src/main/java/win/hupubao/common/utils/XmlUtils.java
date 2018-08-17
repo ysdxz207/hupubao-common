@@ -121,24 +121,17 @@ public class XmlUtils {
      * @return
      * @throws UnsupportedJsonFormatException
      */
-    public static JSON xmlToJson(String xml,
+    public static Object xmlToJson(String xml,
                                  boolean extractXMLCDATA) throws UnsupportedJsonFormatException {
-        JSON result = null;
+        Object result = null;
         try {
-            result = JSON.parseObject(xml);
-        } catch (Exception e) {
-            try {
-                result = JSON.parseArray(xml);
-            } catch (Exception ignored) {
-            }
+            result = JSON.parse(xml);
+        } catch (Exception ignored) {
         }
 
         if (result == null) {
             Element element = Jsoup.parse(xml).body();
-            Object o = elementToJson(element, extractXMLCDATA);
-            if (o instanceof JSONObject) {
-                result = (JSONObject) o;
-            }
+            result = elementToJson(element, extractXMLCDATA);
         }
 
         if (result == null) {

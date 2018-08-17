@@ -16,6 +16,7 @@
 
 package win.hupubao.common.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -38,12 +39,12 @@ public class StringUtils {
                 || obj.toString().equalsIgnoreCase("null");
     }
 
-    public static boolean isNotBlank(Object obj){
-         return !isBlank(obj);
+    public static boolean isNotBlank(Object obj) {
+        return !isBlank(obj);
     }
 
     public static boolean isEmpty(Object obj) {
-        return obj == null  || obj.toString().isEmpty();
+        return obj == null || obj.toString().isEmpty();
     }
 
     public static boolean isNotEmpty(Object obj) {
@@ -51,7 +52,7 @@ public class StringUtils {
     }
 
     public static Integer parseInteger(String str) {
-        String regEx="[^0-9]";
+        String regEx = "[^0-9]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(str);
         return Integer.valueOf(m.replaceAll("").trim());
@@ -59,6 +60,7 @@ public class StringUtils {
 
     /**
      * 首字母转大写
+     *
      * @param name
      * @return
      */
@@ -68,6 +70,7 @@ public class StringUtils {
 
     /**
      * 首字母转小写
+     *
      * @param name
      * @return
      */
@@ -75,12 +78,12 @@ public class StringUtils {
         return StringUtils.isBlank(name) ? "" : name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
-    public static String join(Object[] strAry, String join){
-        StringBuffer sb=new StringBuffer();
-        for(int i=0;i<strAry.length;i++){
-            if(i==(strAry.length-1)){
+    public static String join(Object[] strAry, String join) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < strAry.length; i++) {
+            if (i == (strAry.length - 1)) {
                 sb.append(strAry[i]);
-            }else{
+            } else {
                 sb.append(strAry[i]).append(join);
             }
         }
@@ -90,8 +93,7 @@ public class StringUtils {
 
     /**
      * @param htmlStr
-     * @return
-     * 删除Html标签
+     * @return 删除Html标签
      */
     public static String delHTMLTag(String htmlStr) {
         String regExScript = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
@@ -116,12 +118,13 @@ public class StringUtils {
 
     /**
      * 删除空格，换行符，制表符
+     *
      * @param str
      * @return
      */
     public static String replaceBlank(String str) {
         String dest = "";
-        if (str!=null) {
+        if (str != null) {
             Pattern p = compile("\\s*|\t|\r|\n");
             Matcher m = p.matcher(str);
             dest = m.replaceAll("");
@@ -131,6 +134,7 @@ public class StringUtils {
 
     /**
      * 将url参数解析为json
+     *
      * @param urlParams
      * @param charset
      * @return
@@ -153,5 +157,20 @@ public class StringUtils {
             }
         }
         return jsonObject;
+    }
+
+    /**
+     * 检查是否是json字符串
+     * @param str
+     * @return
+     */
+    public static boolean isJsonString(String str) {
+        boolean result = false;
+        try {
+            JSON.parse(str);
+            result = true;
+        } catch (Exception ignored) {
+        }
+        return result;
     }
 }

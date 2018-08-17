@@ -19,7 +19,6 @@ package win.hupubao.common.http;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -43,6 +42,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import win.hupubao.common.utils.StringUtils;
 import win.hupubao.common.utils.XmlUtils;
 
 import java.io.IOException;
@@ -269,15 +269,11 @@ public class Page {
     private Response requestAndParse(HttpClient httpClient,
                                      HttpRequestBase method,
                                      HttpClientContext context) {
-        Response response = new Response();
-        Document document = new Document("");
-        response.setDocument(document);
         try {
             logger.log(Level.INFO, "Sending request to {0}", method.getURI());
             HttpResponse httpResponse = httpClient.execute(method, context);
 
             int statusCode = httpResponse.getStatusLine().getStatusCode();
-            response.setStatusCode(statusCode);
             HttpHost target = context.getTargetHost();
             List<URI> redirectLocations = context.getRedirectLocations();
             URI location = null;
@@ -287,7 +283,6 @@ public class Page {
                 e.printStackTrace();
             }
             String baseUri = location != null ? location.toASCIIString() : "";
-            document.setBaseUri(baseUri);
 
             byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
             String html = new String(bytes);
@@ -296,14 +291,7 @@ public class Page {
                     && StringUtils.isNotBlank(html)) {
                 String charset = getCharset(Jsoup.parse(html));
                 html = new String(bytes, charset);
-                if (StringUtils.isNotBlank(html)) {
-                    Document doc = Jsoup.parse(html);
-                    if (doc == null) {
-                        return response;
-                    }
-                    response.setDocument(doc);
-                    return response;
-                }
+                return new Response(statusCode, baseUri, html);
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -315,7 +303,7 @@ public class Page {
                 return requestAndParse(httpClient, method, context);
             }
         }
-        return response;
+        return new Response(0, "", null);
     }
 
     private String getCharset(Document document) {
@@ -344,26 +332,18 @@ public class Page {
 
     public static class Response {
         private int statusCode = 0;
-        private Document document;
+        private String baseUri;
+        private String result;
 
         public Response() {
-            this.document = new Document("");
         }
 
-        public Response(int responseCode,
-                        Document document) {
-            this.statusCode = responseCode;
-            this.document = document == null ? new Document("") : document;
-        }
-
-        /**
-         * 解析html或xml
-         *
-         * @param htmlOrXml
-         * @return
-         */
-        public static Page.Response parse(String htmlOrXml) {
-            return new Page.Response(HttpStatus.SC_OK, Jsoup.parse(htmlOrXml));
+        public Response(int statusCode,
+                        String baseUri,
+                        String result) {
+            this.statusCode = statusCode;
+            this.baseUri = baseUri;
+            this.result = result;
         }
 
         /**
@@ -373,18 +353,25 @@ public class Page {
          * @return
          * @throws XmlUtils.UnsupportedJsonFormatException
          */
-        public JSON bodyToJson(boolean extractXMLCDATA) {
-            if (document == null
-                    || document.body() == null) {
+        public Object toJson(boolean extractXMLCDATA) {
+            if (StringUtils.isBlank(this.result)) {
                 return new JSONObject();
             }
-            Element body = document.body();
-            return XmlUtils.xmlToJson(body.html(), extractXMLCDATA);
+            return XmlUtils.xmlToJson(this.result, extractXMLCDATA);
+        }
+
+        /**
+         * 使用须注意字符串中包含未转义的html内容也会被解析，
+         * 可能会导致非预期结果
+         * @return
+         */
+        public Document parse() {
+            return Jsoup.parse(this.result == null ? "" : this.result);
         }
 
         @Override
         public String toString() {
-            return document.toString();
+            return this.result;
         }
 
         public int getStatusCode() {
@@ -395,12 +382,20 @@ public class Page {
             this.statusCode = statusCode;
         }
 
-        public Document getDocument() {
-            return document;
+        public String getResult() {
+            return result;
         }
 
-        public void setDocument(Document document) {
-            this.document = document;
+        public void setResult(String result) {
+            this.result = result;
+        }
+
+        public String getBaseUri() {
+            return baseUri;
+        }
+
+        public void setBaseUri(String baseUri) {
+            this.baseUri = baseUri;
         }
     }
 
