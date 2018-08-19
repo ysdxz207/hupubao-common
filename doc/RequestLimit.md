@@ -5,6 +5,9 @@
 基于[ExpiringMap](https://github.com/jhalterman/expiringmap)和AOP的访问请求控制工具
 
 
+- 注意
+不支持多实例
+
 - 使用方法
 
 1.需要加入maven插件：aspectj-maven-plugin
