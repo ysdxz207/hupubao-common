@@ -1,8 +1,13 @@
 package win.hupubao.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class IPUtils {
 
@@ -13,6 +18,13 @@ public class IPUtils {
             add("0:0:0:0:0:0:0:1");
         }
     };
+
+    private static final Pattern PATTERN_LINUX = Pattern
+            .compile("[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+");
+
+    private static final Pattern PATTERN_WINDOWS = Pattern
+            .compile("[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+");
+
 
     /**
      * <p>
@@ -55,7 +67,56 @@ public class IPUtils {
         return xforwardIp.substring( 0 , commaOffset );
     }
 
+    public static String getMac(String ip) {
+        Pattern macpt = null;
+
+        // Find OS and set command according to OS
+        String OS = System.getProperty("os.name").toLowerCase();
+
+        String[] cmd;
+        if (OS.contains("win")) {
+            // Windows
+            macpt = PATTERN_WINDOWS;
+            String[] a = { "arp", "-a", ip };
+            cmd = a;
+        } else {
+            // Mac OS X, Linux
+            macpt = PATTERN_LINUX;
+            String[] a = { "arp", ip };
+            cmd = a;
+        }
+
+        try {
+            // Run command
+            Process p = Runtime.getRuntime().exec(cmd);
+            p.waitFor();
+            // read output with BufferedReader
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    p.getInputStream()));
+            String line = reader.readLine();
+
+            // Loop trough lines
+            while (line != null) {
+                Matcher m = macpt.matcher(line);
+
+                // when Matcher finds a Line then return it as result
+                if (m.find()) {
+                    return m.group(0);
+                }
+
+                line = reader.readLine();
+            }
+
+        } catch (IOException | InterruptedException e1) {
+            e1.printStackTrace();
+        }
+
+        // Return empty string if no MAC is found
+        return "";
+    }
+
     public static boolean isLocalAddress(String ip) {
         return LOCAL_ADDRESS_LIST.contains(ip);
     }
+
 }
