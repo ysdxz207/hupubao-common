@@ -27,9 +27,18 @@ import java.util.Locale;
 public class DateUtils {
 
     public enum MonthDay {
-        FIRST_DAY,//第一天
-        LAST_DAY,//最后一天
-        NOW//现在的时间
+        /**
+         * 第一天
+         */
+        FIRST_DAY,
+        /**
+         * 最后一天
+         */
+        LAST_DAY,
+        /**
+         * 现在的时间
+         */
+        NOW
     }
 
     /**
@@ -54,6 +63,7 @@ public class DateUtils {
             case LAST_DAY:
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 break;
+                default:
         }
         return calendar.getTime();
     }
