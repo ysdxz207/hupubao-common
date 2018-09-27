@@ -32,6 +32,7 @@
 - [传统验证码生成工具](doc/Captcha.md)(v1.1.1)
 - [RSA工具](doc/RSA.md)(v1.1.1)
 - [访问请求限制工具](doc/RequestLimit.md)(1.1.5)
+- [简单定时器工具](doc/Scheduler.md)(1.1.6)
 
 
 
