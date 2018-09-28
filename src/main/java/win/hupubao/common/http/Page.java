@@ -42,6 +42,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import win.hupubao.common.utils.LoggerUtils;
 import win.hupubao.common.utils.StringUtils;
 import win.hupubao.common.utils.XmlUtils;
 
@@ -66,8 +67,6 @@ import java.util.regex.Pattern;
  */
 
 public class Page {
-    private Logger logger = Logger.getLogger(Page.class.getName());
-
     private static int TIMEOUT_REQUEST = 5000;
     private static int TIMEOUT_CONNECTION = 5000;
     private static int TIMEOUT_READ_DATA = 12000;
@@ -77,6 +76,7 @@ public class Page {
     private static String CHARSET = "UTF-8";
 
     private static boolean IGNORE_USER_AGENT = false;
+    private static boolean LOGGER = true;
 
     private static final Pattern PATTERN_CHARSET = Pattern.compile(".*charset=([^;]*).*");
     private static final Pattern PATTERN_CHARSET_DEEP = Pattern.compile(".*charset=\"(.*)\".*");
@@ -124,13 +124,13 @@ public class Page {
         return this;
     }
 
-    public Page loggerOn(Level level) {
-        logger.setLevel(level);
+    public Page loggerOn() {
+        LOGGER = true;
         return this;
     }
 
     public Page loggerOff() {
-        logger.setLevel(Level.OFF);
+        LOGGER = false;
         return this;
     }
 
@@ -270,7 +270,9 @@ public class Page {
                                      HttpRequestBase method,
                                      HttpClientContext context) {
         try {
-            logger.log(Level.INFO, "Sending request to {0}", method.getURI());
+            if (LOGGER) {
+                LoggerUtils.info("Sending request to {}", method.getURI());
+            }
             HttpResponse httpResponse = httpClient.execute(method, context);
 
             int statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -299,7 +301,9 @@ public class Page {
             e.printStackTrace();
             if (RETRY_TIMES > 0) {
                 RETRY_TIMES--;
-                logger.info("[Page request retry]:" + method.getURI());
+                if (LOGGER) {
+                    LoggerUtils.info("[Page request retry]:{}", method.getURI());
+                }
                 return requestAndParse(httpClient, method, context);
             }
         }
