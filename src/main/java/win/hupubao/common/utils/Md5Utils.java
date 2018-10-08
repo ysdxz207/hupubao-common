@@ -17,6 +17,7 @@
 package win.hupubao.common.utils;
 
 import java.security.MessageDigest;
+import java.util.Map;
 
 /**
  * @author W.feihong
@@ -53,4 +54,36 @@ public final class Md5Utils {
         }
     }
 
+    /**
+     * md5签名
+     *
+     * @param key    私钥
+     * @param params 参数
+     * @return 签名字符串
+     */
+    public static String sign(String key,
+                              Map<String, String> params) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> me : params.entrySet()) {
+            sb.append(me.getKey()).append("=").append(me.getValue()).append("&");
+        }
+        sb.append("key=").append(key);
+        return md5(sb.toString());
+    }
+
+    /**
+     * 验签
+     * @param key
+     * @param sign
+     * @param params
+     * @return
+     */
+    public static boolean verify(String key,
+                                 String sign,
+                                 Map<String, String> params) {
+        if (StringUtils.isBlank(sign)) {
+            return false;
+        }
+        return sign.equals(sign(key, params));
+    }
 }
