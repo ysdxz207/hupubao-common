@@ -429,6 +429,11 @@ public class Yuan implements Serializable {
         return (int) (this.doubleValue() * 100);
     }
 
+    /**
+     * 分转元
+     * @param fen
+     * @return
+     */
     public static Yuan parse(int fen) {
         return new Yuan(fen / 100.00d);
     }
