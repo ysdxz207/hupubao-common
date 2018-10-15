@@ -38,10 +38,8 @@ public class XmlUtils {
     private static class El implements Serializable {
         private static final long serialVersionUID = -1016024230871811400L;
         private int level = 0;
-        private String html;
         private String text = "";
         private String tagName;
-        private El parent;
         private List<El> children = new ArrayList<>();
 
         public El() {
@@ -49,7 +47,6 @@ public class XmlUtils {
 
         public El(String tagName) {
             this.tagName = tagName;
-            this.html = getHtml(this);
         }
 
         public String html() {
@@ -100,18 +97,14 @@ public class XmlUtils {
 
         public El append(String tagName) {
             El child = new El(tagName);
-            child.parent = this;
             child.level = level + 1;
             this.children.add(child);
-            this.html = getHtml(this);
             return child;
         }
 
         public void text(String text,
                          boolean addXmlCDATA) {
             this.text = addXmlCDATA ? "<![CDATA[" + text + "]]>" : text;
-            this.html = getHtml(this);
-            this.parent.html = getHtml(this.parent);
         }
     }
 
@@ -154,6 +147,7 @@ public class XmlUtils {
             return "";
         }
 
+        rootTagName = StringUtils.isBlank(rootTagName) ? "root" : rootTagName;
         El root = new El(rootTagName);
         convertJsonToElement(root, JSON.parseObject(json), addXMLCDATA);
         return root.html();
