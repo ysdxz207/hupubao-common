@@ -20,6 +20,7 @@ public class TestScheduler {
                     System.out.println("once");
         });
 
+        // for test
         try {
             Thread.sleep(10000L);
         } catch (InterruptedException e) {
