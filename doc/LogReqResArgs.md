@@ -13,7 +13,7 @@
     <version>1.10</version>
     <configuration>
         <encoding>UTF-8</encoding>
-        <complianceLevel>1.8</complianceLevel>
+        <complianceLevel>${JDK_VERSION}</complianceLevel>
         <aspectLibraries>
             <aspectLibrary>
                 <groupId>win.hupubao</groupId>
@@ -27,8 +27,8 @@
                 <goal>compile</goal>
             </goals>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>${JDK_VERSION}</source>
+                <target>${JDK_VERSION}</target>
             </configuration>
         </execution>
     </executions>
