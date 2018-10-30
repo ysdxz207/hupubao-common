@@ -36,6 +36,16 @@
 
 ```
 
+**spring boot使用**
+
+引入：
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
 2.使用
 
 ```java
