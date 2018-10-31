@@ -30,6 +30,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
+@Inherited// 支持继承，这样在aop的cglib动态代理类中才能获取到注解
 public @interface LogReqResArgs {
     /**
      * 请求参数日志头，默认值为RequestMapping的路径，若无注解则是方法名
@@ -37,7 +38,7 @@ public @interface LogReqResArgs {
      */
     public String title() default "";
     public String titleRequest() default "request parameters:";
-    public String titleResponse() default "response parameters:";
+    public String titleResponse() default "response result:";
     public String titleException() default "exception:";
     public boolean logException() default true;
 }
