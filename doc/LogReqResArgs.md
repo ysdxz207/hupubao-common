@@ -14,6 +14,7 @@
     <configuration>
         <encoding>UTF-8</encoding>
         <complianceLevel>${JDK_VERSION}</complianceLevel>
+        <sources/>
         <aspectLibraries>
             <aspectLibrary>
                 <groupId>win.hupubao</groupId>
