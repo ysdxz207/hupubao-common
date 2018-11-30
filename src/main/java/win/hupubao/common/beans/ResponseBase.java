@@ -31,7 +31,7 @@ import java.io.Serializable;
  * @author W.feihong
  * @date 2016年12月6日 下午9:24:25
  */
-public class ResponseBase<T> implements Serializable {
+public class ResponseBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -90,14 +90,16 @@ public class ResponseBase<T> implements Serializable {
 		this.data = JSONObject.parse(JSON.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect));
 	}
 
-	@SuppressWarnings("unchecked")public T errorMessage(String message) {
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T errorMessage(String message) {
 		this.errorCode = ERROR_CODE_FAIL;
 		this.message = message;
 		this.statusCode = STATUS_CODE_FAIL;
 		return (T) this;
 	}
 
-	@SuppressWarnings("unchecked")public T error(Throwable e) {
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T error(Throwable e) {
 		Throwable cause = e.getCause();
 
 		if (cause != null
@@ -111,14 +113,16 @@ public class ResponseBase<T> implements Serializable {
 	}
 
 
-	@SuppressWarnings("unchecked")public T error(ErrorInfo error) {
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T error(ErrorInfo error) {
 		this.errorCode = error.getErrorCode();
 		this.message = error.getErrorMsg();
 		this.statusCode = STATUS_CODE_FAIL;
 		return (T) this;
 	}
 
-	public T success(Object data) {
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T success(Object data) {
 		this.errorCode = ERROR_CODE_SUCCESS;
 		this.message = MESSAGE_SUCCESS;
 		this.statusCode = STATUS_CODE_SUCCESS;
@@ -126,7 +130,8 @@ public class ResponseBase<T> implements Serializable {
 		return (T) this;
 	}
 
-	@SuppressWarnings("unchecked")public T success() {
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T success() {
 		return success(null);
 	}
 
