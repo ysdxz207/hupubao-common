@@ -103,7 +103,7 @@ public class ResponseBase implements Serializable {
 		Throwable cause = e.getCause();
 
 		if (e instanceof BusinessException || (cause instanceof BusinessException)) {
-			this.message = cause.getMessage();
+			this.message = cause == null ? e.getMessage() : cause.getMessage();
 			this.errorCode = e.getMessage();
 		}
 
