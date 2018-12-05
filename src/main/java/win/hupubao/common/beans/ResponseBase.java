@@ -37,13 +37,13 @@ public class ResponseBase implements Serializable {
 
 	public static final String CODE_FAIL = "FAIL";
 	public static final String MESSAGE_FAIL = "Fail.";
-	public static final int STATUS_CODE_FAIL = 300;
+	public static final int RESPONSE_STATUS_FAIL = 300;
 
 	public static final String ERROR_CODE_SUCCESS = "SUCCESS";
 	public static final String MESSAGE_SUCCESS = "Success.";
 	public static final int STATUS_CODE_SUCCESS = 200;
 
-	private int responseStatus = STATUS_CODE_FAIL;
+	private int responseStatus = RESPONSE_STATUS_FAIL;
 	private String code = CODE_FAIL;
 	private String message = MESSAGE_FAIL;
 	private Object data;
@@ -94,7 +94,7 @@ public class ResponseBase implements Serializable {
 	public <T extends ResponseBase> T errorMessage(String message) {
 		this.code = CODE_FAIL;
 		this.message = message;
-		this.responseStatus = STATUS_CODE_FAIL;
+		this.responseStatus = RESPONSE_STATUS_FAIL;
 		return (T) this;
 	}
 
@@ -107,7 +107,7 @@ public class ResponseBase implements Serializable {
 			this.code = e.getMessage();
 		}
 
-		this.responseStatus = STATUS_CODE_FAIL;
+		this.responseStatus = RESPONSE_STATUS_FAIL;
 		return (T) this;
 	}
 
@@ -116,7 +116,7 @@ public class ResponseBase implements Serializable {
 	public <T extends ResponseBase> T error(ErrorInfo error) {
 		this.code = error.getErrorCode();
 		this.message = error.getErrorMsg();
-		this.responseStatus = STATUS_CODE_FAIL;
+		this.responseStatus = RESPONSE_STATUS_FAIL;
 		return (T) this;
 	}
 
