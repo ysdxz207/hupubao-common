@@ -35,7 +35,7 @@ public class ResponseBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String ERROR_CODE_FAIL = "FAIL";
+	public static final String CODE_FAIL = "FAIL";
 	public static final String MESSAGE_FAIL = "Fail.";
 	public static final int STATUS_CODE_FAIL = 300;
 
@@ -43,25 +43,25 @@ public class ResponseBase implements Serializable {
 	public static final String MESSAGE_SUCCESS = "Success.";
 	public static final int STATUS_CODE_SUCCESS = 200;
 
-	private int statusCode = STATUS_CODE_FAIL;
-	private String errorCode = ERROR_CODE_FAIL;
+	private int responseStatus = STATUS_CODE_FAIL;
+	private String code = CODE_FAIL;
 	private String message = MESSAGE_FAIL;
 	private Object data;
 
-	public int getStatusCode() {
-		return statusCode;
+	public int getResponseStatus() {
+		return responseStatus;
 	}
 
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
+	public void setResponseStatus(int responseStatus) {
+		this.responseStatus = responseStatus;
 	}
 
-	public String getErrorCode() {
-		return errorCode;
+	public String getCode() {
+		return code;
 	}
 
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getMessage() {
@@ -92,9 +92,9 @@ public class ResponseBase implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T errorMessage(String message) {
-		this.errorCode = ERROR_CODE_FAIL;
+		this.code = CODE_FAIL;
 		this.message = message;
-		this.statusCode = STATUS_CODE_FAIL;
+		this.responseStatus = STATUS_CODE_FAIL;
 		return (T) this;
 	}
 
@@ -104,27 +104,27 @@ public class ResponseBase implements Serializable {
 
 		if (e instanceof BusinessException || (cause instanceof BusinessException)) {
 			this.message = cause == null ? e.getMessage() : cause.getMessage();
-			this.errorCode = e.getMessage();
+			this.code = e.getMessage();
 		}
 
-		this.statusCode = STATUS_CODE_FAIL;
+		this.responseStatus = STATUS_CODE_FAIL;
 		return (T) this;
 	}
 
 
 	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T error(ErrorInfo error) {
-		this.errorCode = error.getErrorCode();
+		this.code = error.getErrorCode();
 		this.message = error.getErrorMsg();
-		this.statusCode = STATUS_CODE_FAIL;
+		this.responseStatus = STATUS_CODE_FAIL;
 		return (T) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T success(Object data) {
-		this.errorCode = ERROR_CODE_SUCCESS;
+		this.code = ERROR_CODE_SUCCESS;
 		this.message = MESSAGE_SUCCESS;
-		this.statusCode = STATUS_CODE_SUCCESS;
+		this.responseStatus = STATUS_CODE_SUCCESS;
 		this.data = data;
 		return (T) this;
 	}
