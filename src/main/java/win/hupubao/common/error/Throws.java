@@ -33,7 +33,7 @@ public class Throws {
     }
 
     public static void throwError(String message) {
-        throwError(ResponseBase.CODE_FAIL, message);
+        throwError(ResponseBase.RESPONSE_CODE_FAIL, message);
     }
 
     public static void throwError(ErrorInfo error) {
