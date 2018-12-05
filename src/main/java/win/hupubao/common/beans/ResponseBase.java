@@ -34,6 +34,7 @@ import java.io.Serializable;
 public class ResponseBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final int MAX_LEVEL_BUSINESS_EXCEPTION = 5;
 
 	public static final String RESPONSE_CODE_FAIL = "FAIL";
 	public static final String MESSAGE_FAIL = "Fail.";
@@ -101,15 +102,28 @@ public class ResponseBase implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T error(Throwable e) {
-		Throwable cause = e.getCause();
-
-		if (e instanceof BusinessException || (cause instanceof BusinessException)) {
-			this.message = cause == null ? e.getMessage() : cause.getMessage();
-			this.responseCode = e.getMessage();
-		}
-
+		BusinessException businessException = getBusinessException(e);
+		this.responseCode = businessException.getCode();
+		this.message = businessException.getMessage();
 		this.responseStatus = RESPONSE_STATUS_FAIL;
 		return (T) this;
+	}
+
+	/**
+	 * 递归获取最底层BusinessException
+	 * @param e
+	 * @return
+	 */
+	private BusinessException getBusinessException(Throwable e) {
+		if (e == null) {
+			return new BusinessException(RESPONSE_CODE_FAIL, MESSAGE_FAIL);
+		}
+
+		if (e instanceof BusinessException && e.getCause() == null) {
+			return (BusinessException) e;
+		}
+
+		return getBusinessException(e.getCause());
 	}
 
 

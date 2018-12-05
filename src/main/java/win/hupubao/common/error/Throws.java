@@ -28,8 +28,8 @@ import win.hupubao.common.utils.StringUtils;
  */
 public class Throws {
 
-    public static void throwError(String errorCode, String message) {
-        throw new BusinessException(errorCode, new BusinessException(message));
+    public static void throwError(String code, String message) {
+        throw new BusinessException(code, message);
     }
 
     public static void throwError(String message) {

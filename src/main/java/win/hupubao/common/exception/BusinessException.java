@@ -16,25 +16,20 @@
 
 package win.hupubao.common.exception;
 
+/**
+ * 业务异常
+ */
 public class BusinessException extends RuntimeException {
 
+    private String code;
 
-    public BusinessException() {
-    }
 
-    public BusinessException(String message) {
+    public BusinessException(String code, String message) {
         super(message);
+        this.code = code;
     }
 
-    public BusinessException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public BusinessException(Throwable cause) {
-        super(cause);
-    }
-
-    public BusinessException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public String getCode() {
+        return code;
     }
 }

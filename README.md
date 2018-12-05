@@ -9,7 +9,7 @@
 <dependency>
     <groupId>win.hupubao</groupId>
     <artifactId>hupubao-common</artifactId>
-    <version>1.1.6</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -142,3 +142,13 @@
 </dependency>
 
 ```
+
+## Changes
+
+Version 2.0
+
+ResponseBase.statusCode -> ResponseBase.responseStatus
+ResponseBase.errorCode -> ResponseBase.responseCode
+
+
+
