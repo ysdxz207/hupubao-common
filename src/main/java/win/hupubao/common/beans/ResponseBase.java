@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import win.hupubao.common.error.ErrorInfo;
 import win.hupubao.common.exception.BusinessException;
+import win.hupubao.common.utils.StringUtils;
 
 import java.io.Serializable;
 
@@ -100,9 +101,13 @@ public class ResponseBase implements Serializable {
 		return (T) this;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T error(Throwable e) {
-		BusinessException businessException = getBusinessException(e);
+		return error(e, MESSAGE_FAIL);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T error(Throwable e, String defaultMessage) {
+		BusinessException businessException = getBusinessException(e, defaultMessage);
 		this.responseCode = businessException.getCode();
 		this.message = businessException.getMessage();
 		this.responseStatus = RESPONSE_STATUS_FAIL;
@@ -114,16 +119,16 @@ public class ResponseBase implements Serializable {
 	 * @param e
 	 * @return
 	 */
-	private BusinessException getBusinessException(Throwable e) {
+	private BusinessException getBusinessException(Throwable e, String defaultMessage) {
 		if (e == null) {
-			return new BusinessException(RESPONSE_CODE_FAIL, MESSAGE_FAIL);
+			return new BusinessException(RESPONSE_CODE_FAIL, StringUtils.isEmpty(defaultMessage) ? MESSAGE_FAIL: defaultMessage);
 		}
 
 		if (e instanceof BusinessException && e.getCause() == null) {
 			return (BusinessException) e;
 		}
 
-		return getBusinessException(e.getCause());
+		return getBusinessException(e.getCause(), defaultMessage);
 	}
 
 
