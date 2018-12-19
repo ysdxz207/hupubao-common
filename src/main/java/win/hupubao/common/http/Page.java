@@ -32,10 +32,13 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -46,11 +49,17 @@ import win.hupubao.common.utils.LoggerUtils;
 import win.hupubao.common.utils.StringUtils;
 import win.hupubao.common.utils.XmlUtils;
 
+import javax.net.ssl.SSLContext;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -243,6 +252,22 @@ public class Page {
     public Response request(String url,
                             Object params,
                             Connection.Method method) {
+        return request(url, params, method, null, null);
+    }
+
+    /**
+     * @param url
+     * @param params GET方式支持JSONObject类型
+     *               POST方式支持JSONObject和String类型
+     * @param method
+     * @param filePKCS12 证书
+     * @return
+     */
+    public Response request(String url,
+                            Object params,
+                            Connection.Method method,
+                            File filePKCS12,
+                            String password) {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_CONNECTION)
                 .setConnectionRequestTimeout(TIMEOUT_REQUEST)
@@ -260,10 +285,36 @@ public class Page {
             httpMethod.addHeader("User-Agent", USER_AGENT);
         }
         HttpClient httpClient = HttpClients.custom()
+                .setSSLSocketFactory(buildSSLConnectionSocketFactory(filePKCS12, password))
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultRequestConfig(requestConfig).build();
 
         return requestAndParse(httpClient, httpMethod, context);
+    }
+
+    private SSLConnectionSocketFactory buildSSLConnectionSocketFactory(File filePKCS12,
+                                                                       String password) {
+        if (password == null) {
+            password = "";
+        }
+        try {
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            keyStore.load(new FileInputStream(filePKCS12), password.toCharArray());
+            SSLContext sslcontext = SSLContexts.custom()
+                    // 忽略掉对服务器端证书的校验
+                    .loadTrustMaterial((TrustStrategy) (chain, authType) -> true)
+                    .loadKeyMaterial(keyStore, password.toCharArray())
+                    .build();
+            return new SSLConnectionSocketFactory(
+                    sslcontext,
+                    new String[]{"TLSv1"},
+                    null,
+                    SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+        }
+
+        return null;
     }
 
     private Response requestAndParse(HttpClient httpClient,
