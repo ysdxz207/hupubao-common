@@ -19,8 +19,9 @@ public class HMACSha256Utils {
         String stmp;
         for (int n = 0; b != null && n < b.length; n++) {
             stmp = Integer.toHexString(b[n] & 0XFF);
-            if (stmp.length() == 1)
+            if (stmp.length() == 1) {
                 hs.append('0');
+            }
             hs.append(stmp);
         }
         return hs.toString().toLowerCase();
