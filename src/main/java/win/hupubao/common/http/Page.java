@@ -17,7 +17,6 @@
 package win.hupubao.common.http;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -50,8 +49,6 @@ import win.hupubao.common.utils.StringUtils;
 import win.hupubao.common.utils.XmlUtils;
 
 import javax.net.ssl.SSLContext;
-import javax.security.cert.CertificateException;
-import javax.security.cert.X509Certificate;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -63,13 +60,11 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author W.feihong.wei
+ * @author ysdxz207
  * @date 2018-06-13 17:44:35
  * <p>
  * 通用HTTP请求工具

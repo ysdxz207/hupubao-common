@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author W.feihong
+ * @author ysdxz207
  * @date 2018-08-06
  * 访问频率检查
  */

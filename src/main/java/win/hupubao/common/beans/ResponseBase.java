@@ -29,7 +29,7 @@ import win.hupubao.common.utils.StringUtils;
 import java.io.Serializable;
 
 /**
- * @author W.feihong
+ * @author ysdxz207
  * @date 2016年12月6日 下午9:24:25
  */
 public class ResponseBase implements Serializable {

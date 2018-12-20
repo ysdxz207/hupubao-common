@@ -23,7 +23,7 @@ import win.hupubao.common.utils.StringUtils;
 /**
  * 错误异常抛出
  *
- * @author W.feihong
+ * @author ysdxz207
  * @date 2017-03-07
  */
 public class Throws {

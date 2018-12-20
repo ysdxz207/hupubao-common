@@ -17,7 +17,7 @@
 package win.hupubao.common.utils;
 
 /**
- * @author W.feihong
+ * @author ysdxz207
  * @date 2017-08-24
  */
 public class Assert {

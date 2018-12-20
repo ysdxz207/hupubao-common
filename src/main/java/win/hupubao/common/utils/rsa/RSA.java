@@ -37,7 +37,7 @@ import java.util.Map;
 
 
 /**
- * @author W.feihong
+ * @author ysdxz207
  * @date 2017年1月13日
  * RSA密钥生成工具
  * 因本工具类使用随机数，在tomcat下使用时可能需加上启动参数：
@@ -217,27 +217,10 @@ public class RSA {
                        SignType signType) {
 
         privateKey = StringUtils.replaceBlank(privateKey);
-        String prestr = createLinkString(params);
+        String prestr = StringUtils.createLinkString(params);
         String md = DigestUtils.md5Hex(getContentBytes(prestr));
         String mysign = buildSign(md, privateKey, signType);
         return mysign;
-    }
-
-    public String createLinkString(Map<String, String> params) {
-        List<String> keys = new ArrayList<>(params.keySet());
-        Collections.sort(keys);
-        String prestr = "";
-        for (int i = 0; i < keys.size(); i++) {
-            String key = keys.get(i);
-            String value = params.get(key);
-            if (value == null || "".equals(value.trim())) {
-                continue;
-            }
-            if (!"sign".equals(key)) {
-                prestr = prestr + key + "=" + value + "&";
-            }
-        }
-        return prestr.substring(0, prestr.length() - 1);
     }
 
     private String buildSign(String content,
@@ -285,7 +268,7 @@ public class RSA {
         if (publicKey == null) {
             throw new NoPublicKeyException("Public key is null.Please call `rsaKey(RSAKey rsaKey)` method first.");
         }
-        String prestr = createLinkString(sPara);
+        String prestr = StringUtils.createLinkString(sPara);
         String md = DigestUtils.md5Hex(getContentBytes(prestr));
 
 

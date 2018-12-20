@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 /**
  *
- * @author W.feihong
+ * @author ysdxz207
  * @date 2018-08-06
  * 请求间隔控制
  */

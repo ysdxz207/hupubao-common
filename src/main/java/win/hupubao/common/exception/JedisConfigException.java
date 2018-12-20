@@ -17,7 +17,7 @@
 package win.hupubao.common.exception;
 
 /**
- * @author W.feihong
+ * @author ysdxz207
  * @date 2017-09-02
  */
 public class JedisConfigException extends RuntimeException {

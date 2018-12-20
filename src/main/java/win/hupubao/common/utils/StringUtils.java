@@ -21,8 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -172,5 +171,22 @@ public class StringUtils {
         } catch (Exception ignored) {
         }
         return result;
+    }
+
+    public static String createLinkString(Map<String, String> params) {
+        List<String> keys = new ArrayList<>(params.keySet());
+        Collections.sort(keys);
+        String prestr = "";
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            String value = params.get(key);
+            if (value == null || "".equals(value.trim())) {
+                continue;
+            }
+            if (!"sign".equals(key)) {
+                prestr = prestr + key + "=" + value + "&";
+            }
+        }
+        return prestr.substring(0, prestr.length() - 1);
     }
 }
