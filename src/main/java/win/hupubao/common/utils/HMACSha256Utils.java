@@ -43,7 +43,7 @@ public class HMACSha256Utils {
         } catch (Exception e) {
             LoggerUtils.error("HMAC_SHA256 sign error:", e);
         }
-        return hash;
+        return hash.toUpperCase();
     }
 
     public static boolean verify(String sign,
