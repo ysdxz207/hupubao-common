@@ -34,6 +34,7 @@ import org.apache.http.client.utils.URIUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
@@ -279,10 +280,16 @@ public class Page {
         if (!IGNORE_USER_AGENT) {
             httpMethod.addHeader("User-Agent", USER_AGENT);
         }
-        HttpClient httpClient = HttpClients.custom()
-                .setSSLSocketFactory(buildSSLConnectionSocketFactory(filePKCS12, password))
+
+        HttpClientBuilder httpClientBuilder = HttpClients.custom()
                 .setRedirectStrategy(new LaxRedirectStrategy())
-                .setDefaultRequestConfig(requestConfig).build();
+                .setDefaultRequestConfig(requestConfig);
+
+        if (filePKCS12 != null) {
+            httpClientBuilder.setSSLSocketFactory(buildSSLConnectionSocketFactory(filePKCS12, password));
+
+        }
+        HttpClient httpClient = httpClientBuilder.build();
 
         return requestAndParse(httpClient, httpMethod, context);
     }
