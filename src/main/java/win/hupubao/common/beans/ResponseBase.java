@@ -142,17 +142,24 @@ public class ResponseBase implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T success(Object data) {
-		this.responseCode = ERROR_CODE_SUCCESS;
-		this.message = MESSAGE_SUCCESS;
-		this.responseStatus = STATUS_CODE_SUCCESS;
-		this.data = data;
-		return (T) this;
+		return success(MESSAGE_SUCCESS, data);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T success() {
 		return success(null);
 	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends ResponseBase> T success(String message, Object data) {
+		this.responseCode = ERROR_CODE_SUCCESS;
+		this.message = message;
+		this.responseStatus = STATUS_CODE_SUCCESS;
+		this.data = data;
+		return (T) this;
+	}
+
+
 
 	/**
 	 * 序列化
