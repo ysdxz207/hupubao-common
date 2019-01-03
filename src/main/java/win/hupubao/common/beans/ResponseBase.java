@@ -140,12 +140,10 @@ public class ResponseBase implements Serializable {
 		return (T) this;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T success(Object data) {
 		return success(MESSAGE_SUCCESS, data);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends ResponseBase> T success() {
 		return success(null);
 	}
