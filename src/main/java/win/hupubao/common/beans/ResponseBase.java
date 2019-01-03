@@ -35,7 +35,6 @@ import java.io.Serializable;
 public class ResponseBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private static final int MAX_LEVEL_BUSINESS_EXCEPTION = 5;
 
 	public static final String RESPONSE_CODE_FAIL = "FAIL";
 	public static final String MESSAGE_FAIL = "Fail.";
