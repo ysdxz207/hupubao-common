@@ -59,6 +59,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -82,6 +83,8 @@ public class Page {
 
     private static boolean IGNORE_USER_AGENT = false;
     private static boolean LOGGER = true;
+
+    private static Map<String, String> HEADERS = new HashMap<>();
 
     private static final Pattern PATTERN_CHARSET = Pattern.compile(".*charset=([^;]*).*");
     private static final Pattern PATTERN_CHARSET_DEEP = Pattern.compile(".*charset=\"(.*)\".*");
@@ -136,6 +139,11 @@ public class Page {
 
     public Page loggerOff() {
         LOGGER = false;
+        return this;
+    }
+
+    public Page header(String key, String value) {
+        HEADERS.put(key, value);
         return this;
     }
 
@@ -279,6 +287,12 @@ public class Page {
         HttpClientContext context = HttpClientContext.create();
         if (!IGNORE_USER_AGENT) {
             httpMethod.addHeader("User-Agent", USER_AGENT);
+        }
+
+        if (!HEADERS.isEmpty()) {
+            HEADERS.entrySet().forEach(s -> {
+                httpMethod.addHeader(s.getKey(), s.getValue());
+            });
         }
 
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
