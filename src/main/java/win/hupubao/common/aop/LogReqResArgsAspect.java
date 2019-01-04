@@ -32,7 +32,9 @@ import win.hupubao.common.utils.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Optional;
 
 /**
  *
@@ -61,12 +63,7 @@ public class LogReqResArgsAspect {
                        LogReqResArgs logReqResArgs) {
         Object[] args = joinPoint.getArgs();
 
-        HttpServletRequest request = null;
-        for (Object obj : args) {
-            if (obj instanceof HttpServletRequest) {
-                request = (HttpServletRequest) obj;
-            }
-        }
+        HttpServletRequest request = getHttpServletRequest(joinPoint);
         if (request != null) {
             doLog(joinPoint, logReqResArgs, request);
         } else {
@@ -125,6 +122,14 @@ public class LogReqResArgsAspect {
             sb.append(logReqResArgs.titleRequest());
             sb.append(JSON.toJSONString(getRequestArgs((HttpServletRequest) info)));
         } else {
+            if (logReqResArgs.logResponseWithRequest()) {
+                HttpServletRequest request = getHttpServletRequest(joinPoint);
+                if (request != null) {
+                    sb.append(logReqResArgs.titleRequest());
+                    sb.append(JSON.toJSONString(getRequestArgs(request)));
+                    sb.append("\n");
+                }
+            }
             sb.append(logReqResArgs.titleResponse());
             sb.append(JSON.toJSONString(info));
         }
@@ -184,6 +189,20 @@ public class LogReqResArgsAspect {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 获取HttpServletRequest
+     * @param joinPoint
+     * @return
+     */
+    private HttpServletRequest getHttpServletRequest(JoinPoint joinPoint) {
+        Optional<Object> optionalHttpServletRequest = Arrays.stream(joinPoint.getArgs()).filter(o -> o instanceof HttpServletRequest).findFirst();
+        if (optionalHttpServletRequest.isPresent()) {
+            return (HttpServletRequest) optionalHttpServletRequest.get();
+        }
+        LoggerUtils.warn(getClass(), "Method [" + getMethod(joinPoint).getName() + "] with annotation [LogReqResArgs] should have HttpServletRequest type parameters.");
+        return null;
     }
 
     class LogReqResArgsInvalidParameterException extends RuntimeException {

@@ -41,4 +41,10 @@ public @interface LogReqResArgs {
     public String titleResponse() default "response result:";
     public String titleException() default "exception:";
     public boolean logException() default true;
+
+    /**
+     * 记录返回结果时带上请求参数
+     * @return
+     */
+    public boolean logResponseWithRequest() default false;
 }
