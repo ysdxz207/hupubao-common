@@ -61,7 +61,6 @@ public class LogReqResArgsAspect {
     @Before("execution(* *(..)) && @annotation(logReqResArgs)")
     public void before(JoinPoint joinPoint,
                        LogReqResArgs logReqResArgs) {
-        Object[] args = joinPoint.getArgs();
 
         HttpServletRequest request = getHttpServletRequest(joinPoint);
         if (request != null) {
