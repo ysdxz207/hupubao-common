@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -184,6 +185,12 @@ public class LogReqResArgsAspect {
                 String key = args.nextElement();
                 jsonArgs.put(key, request.getParameter(key));
             }
+
+            if (jsonArgs.isEmpty()) {
+                String jsonString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                jsonArgs = JSON.parseObject(jsonString);
+            }
+
             return jsonArgs;
         } catch (Exception e) {
             return null;
