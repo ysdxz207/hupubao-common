@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import win.hupubao.common.error.ErrorInfo;
 import win.hupubao.common.exception.BusinessException;
+import win.hupubao.common.utils.BusinessExceptionUtils;
 import win.hupubao.common.utils.StringUtils;
 
 import java.io.Serializable;
@@ -116,18 +117,16 @@ public class ResponseBase implements Serializable {
 	/**
 	 * 递归获取最底层BusinessException
 	 * @param e
+	 * @param defaultMessage
 	 * @return
 	 */
 	private BusinessException getBusinessException(Throwable e, String defaultMessage) {
-		if (e == null) {
+		BusinessException businessException = BusinessExceptionUtils.getBusinessException(e);
+		if (businessException == null) {
 			return new BusinessException(RESPONSE_CODE_FAIL, StringUtils.isEmpty(defaultMessage) ? MESSAGE_FAIL: defaultMessage);
 		}
 
-		if (e instanceof BusinessException && e.getCause() == null) {
-			return (BusinessException) e;
-		}
-
-		return getBusinessException(e.getCause(), defaultMessage);
+		return businessException;
 	}
 
 
