@@ -30,8 +30,6 @@ import win.hupubao.common.utils.LoggerUtils;
 import win.hupubao.common.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -174,6 +172,7 @@ public class LogReqResArgsAspect {
 
     /**
      * 获取参数JSON字符串
+     * 不支持raw类型
      * @param request
      * @return
      */
@@ -186,11 +185,6 @@ public class LogReqResArgsAspect {
             while (args.hasMoreElements()) {
                 String key = args.nextElement();
                 jsonArgs.put(key, request.getParameter(key));
-            }
-
-            if (jsonArgs.isEmpty()) {
-                String jsonString = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(Collectors.joining(System.lineSeparator()));
-                jsonArgs = JSON.parseObject(jsonString);
             }
 
             return jsonArgs;
