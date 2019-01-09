@@ -30,6 +30,8 @@ import win.hupubao.common.utils.LoggerUtils;
 import win.hupubao.common.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -187,7 +189,7 @@ public class LogReqResArgsAspect {
             }
 
             if (jsonArgs.isEmpty()) {
-                String jsonString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                String jsonString = new BufferedReader(new InputStreamReader(request.getInputStream())).lines().collect(Collectors.joining(System.lineSeparator()));
                 jsonArgs = JSON.parseObject(jsonString);
             }
 
