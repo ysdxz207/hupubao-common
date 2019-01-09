@@ -189,4 +189,33 @@ public class StringUtils {
         }
         return prestr.substring(0, prestr.length() - 1);
     }
+
+    /**
+     * 乱码检测
+     * @param str
+     * @return
+     */
+    public static boolean isGarbled(String str) {
+        try {
+            if (isEmpty(str)) {
+                return false;
+            }
+            String after = replaceBlank(str);
+            String temp = after.replaceAll("\\p{P}", "");
+            char[] ch = temp.trim().toCharArray();
+
+            for (char c : ch) {
+                if (!(c >= 32 && c <= 126)) {
+                    String string = "" + c;
+                    if (!string.matches("[\u4e00-\u9fa5]+")) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LoggerUtils.error("[乱码检测异常][{}]", str, e);
+        }
+
+        return false;
+    }
 }
