@@ -16,6 +16,7 @@
 
 package win.hupubao.common.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public final class Md5Utils {
     public final static String md5(String str) {
 
         try {
-            byte[] btInput = (str).getBytes();
+            byte[] btInput = (str).getBytes(StandardCharsets.UTF_8);
             // 获得MD5摘要算法的 MessageDigest 对象
             MessageDigest mdInst = MessageDigest.getInstance("MD5");
             // 使用指定的字节更新摘要

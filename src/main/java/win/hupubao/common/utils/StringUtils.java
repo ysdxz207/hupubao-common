@@ -176,18 +176,17 @@ public class StringUtils {
     public static String createLinkString(Map<String, String> params) {
         List<String> keys = new ArrayList<>(params.keySet());
         Collections.sort(keys);
-        String prestr = "";
-        for (int i = 0; i < keys.size(); i++) {
-            String key = keys.get(i);
+        String preStr = "";
+        for (String key : keys) {
             String value = params.get(key);
             if (value == null || "".equals(value.trim())) {
                 continue;
             }
             if (!"sign".equals(key)) {
-                prestr = prestr + key + "=" + value + "&";
+                preStr = preStr + key + "=" + value + "&";
             }
         }
-        return prestr.substring(0, prestr.length() - 1);
+        return preStr.substring(0, preStr.length() - 1);
     }
 
     /**
