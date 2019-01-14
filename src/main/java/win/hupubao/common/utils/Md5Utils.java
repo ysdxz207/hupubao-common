@@ -41,10 +41,9 @@ public final class Md5Utils {
             byte[] md = mdInst.digest();
             // 把密文转换成十六进制的字符串形式
             int j = md.length;
-            char chars[] = new char[j * 2];
+            char[] chars = new char[j * 2];
             int k = 0;
-            for (int i = 0; i < j; i++) {
-                byte byte0 = md[i];
+            for (byte byte0 : md) {
                 chars[k++] = HEX_DIGITS[byte0 >>> 4 & 0xf];
                 chars[k++] = HEX_DIGITS[byte0 & 0xf];
             }
