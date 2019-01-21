@@ -9,7 +9,7 @@
 <dependency>
     <groupId>win.hupubao</groupId>
     <artifactId>hupubao-common</artifactId>
-    <version>1.1.7</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 
