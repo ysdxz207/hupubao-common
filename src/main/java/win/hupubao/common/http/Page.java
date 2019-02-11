@@ -365,7 +365,9 @@ public class Page {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (LOGGER) {
+                LoggerUtils.error(e);
+            }
             if (RETRY_TIMES > 0) {
                 RETRY_TIMES--;
                 if (LOGGER) {
