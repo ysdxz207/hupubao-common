@@ -336,6 +336,7 @@ public class Page {
     private Response requestAndParse(HttpClient httpClient,
                                      HttpRequestBase method,
                                      HttpClientContext context) {
+        Response response = new Response(0, "", null);
         try {
             if (LOGGER) {
                 LoggerUtils.info("Sending request to {}", method.getURI());
@@ -343,6 +344,7 @@ public class Page {
             HttpResponse httpResponse = httpClient.execute(method, context);
 
             int statusCode = httpResponse.getStatusLine().getStatusCode();
+            response.setStatusCode(statusCode);
             HttpHost target = context.getTargetHost();
             List<URI> redirectLocations = context.getRedirectLocations();
             URI location = null;
@@ -360,7 +362,9 @@ public class Page {
                     && StringUtils.isNotBlank(html)) {
                 String charset = getCharset(Jsoup.parse(html));
                 html = new String(bytes, charset);
-                return new Response(statusCode, baseUri, html);
+                response.setBaseUri(baseUri);
+                response.setResult(html);
+                return response;
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -376,7 +380,7 @@ public class Page {
                 return requestAndParse(httpClient, method, context);
             }
         }
-        return new Response(0, "", null);
+        return response;
     }
 
     private String getCharset(Document document) {
