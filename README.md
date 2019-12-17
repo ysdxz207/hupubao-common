@@ -1,6 +1,6 @@
 # hupubao-common
 
-简单封装的公共模块，方便开发使用**(已拆分为两个项目[hupubao-common-utils](https://github.com/ysdxz207/hupubao-common-utils)和[hupubao-common-http](https://github.com/ysdxz207/hupubao-common-http))**
+简单封装的公共模块，方便开发使用 **(已拆分为两个项目[hupubao-common-utils](https://github.com/ysdxz207/hupubao-common-utils)和[hupubao-common-http](https://github.com/ysdxz207/hupubao-common-http))**
 
 **使用方法：**
 
